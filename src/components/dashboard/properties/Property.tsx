@@ -1,9 +1,12 @@
-import { LiaBedSolid } from "react-icons/lia"
-import { PiShower } from "react-icons/pi"
-import image from "../../../1732-midvale-ave-1.jpg";
-import styled from "styled-components"
 import { CiEdit } from "react-icons/ci";
+import { LiaBedSolid } from "react-icons/lia";
+import { PiShower } from "react-icons/pi";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import image from "../../../1732-midvale-ave-1.jpg";
 import { IconElement } from "../DashboardNavBar";
+import { setSelectedPropertyId } from "../../../dashboard/propertySlice";
+import { useSelectedPropertyId } from "../../../dashboard/propertySelectors";
 
 export interface PropertyProps {
     propertyId: number;
@@ -45,10 +48,20 @@ const ImagesContainer = styled.div`
     height: 100%;
 `
 
-export const Property: React.FC<PropertyProps> = ({ location, propertyType, numberOfBedrooms, numberOfBathrooms, description, price }) => {
+
+
+export const Property: React.FC<PropertyProps> = ({ location, propertyType, numberOfBedrooms, numberOfBathrooms, description, price, propertyId}) => {
+    const dispatch = useDispatch();
+
+    const withSelectedPropertyId = (propertyId: number) => {
+        dispatch(
+            setSelectedPropertyId({id: propertyId})
+        )
+    }
     return (
         <Container>
-            <IconElement style={{ position: "absolute", top: "20px", right: "20px", color: "grey" }}><CiEdit size={30} /></IconElement>
+            <IconElement onClick={() => {withSelectedPropertyId(propertyId)}} style={{ position: "absolute", top: "20px", right: "20px", color: "grey" }}><CiEdit size={30} /></IconElement>
+            <p style={{ position: "absolute", top: "20px", right: "20px", color: "grey" }}>{useSelectedPropertyId()}</p>
             <ImagesContainer>
                 <div style={{ display: "flex", flexDirection: "column", height: "80%", width: "100%", borderBottom: "1px solid grey" }}>
                     <img src={image} style={{ height: "100%", width: "100%", objectFit: "cover", borderTopLeftRadius: "10px" }}></img>

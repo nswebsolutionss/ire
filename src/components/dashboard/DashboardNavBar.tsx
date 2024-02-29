@@ -11,6 +11,7 @@ import { IoPersonOutline } from "react-icons/io5";
 import { BsQuestionLg } from "react-icons/bs";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
+import { NavElement } from "../../dashboard/propertySlice";
 
 
 
@@ -81,17 +82,17 @@ export const DashboardNavBar: React.FC<NavBarProps> = () => {
                     </IconElement>
                 }
 
-                <Element collapsed={collapsed} elementId={1} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Dashboard" icon={LuLayoutDashboard}></Element>
-                <Element collapsed={collapsed} elementId={2} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Properties" icon={BsHouse}></Element>
-                <Element collapsed={collapsed} elementId={3} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Membership" icon={IoPeopleSharp}></Element>
-                <Element collapsed={collapsed} elementId={4} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Profile" icon={IoPersonOutline}></Element>
+                <Element navElementEnum={NavElement.Dashboard}collapsed={collapsed} elementId={1} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Dashboard" icon={LuLayoutDashboard}></Element>
+                <Element navElementEnum={NavElement.Properties}collapsed={collapsed} elementId={2} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Properties" icon={BsHouse}></Element>
+                <Element navElementEnum={NavElement.Membership}collapsed={collapsed} elementId={3} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Membership" icon={IoPeopleSharp}></Element>
+                <Element navElementEnum={NavElement.Profile}collapsed={collapsed} elementId={4} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Profile" icon={IoPersonOutline}></Element>
                 <div style={{ width: "auto", height: "25px" }}></div>
                 <div style={{ width: "auto", height: "25px" }}></div>
                 <div style={{ width: "auto", height: "25px" }}></div>
                 <div style={{ width: "auto", height: "25px" }}></div>
-                <Element collapsed={collapsed} elementId={5} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Settings" icon={IoSettingsOutline}></Element>
-                <Element collapsed={collapsed} elementId={6} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Help" icon={BsQuestionLg}></Element>
-                <Element collapsed={collapsed} elementId={6} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Sign Out" icon={BiLogOut}></Element>
+                <Element navElementEnum={NavElement.Settings}collapsed={collapsed} elementId={5} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Settings" icon={IoSettingsOutline}></Element>
+                <Element navElementEnum={NavElement.Help}collapsed={collapsed} elementId={6} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Help" icon={BsQuestionLg}></Element>
+                <Element navElementEnum={NavElement.SignOut}collapsed={collapsed} elementId={7} selectedElementId={selectedElementId} setSelectedElementId={setSelectedElementId} label="Sign Out" icon={BiLogOut}></Element>
             </Container>
         </div>
     )

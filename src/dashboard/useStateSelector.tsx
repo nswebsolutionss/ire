@@ -1,5 +1,5 @@
 import { TypedUseSelectorHook, useSelector } from "react-redux";
-import { store } from "./property/propertySlice";
+import { store } from "./propertySlice";
 
 export type RootState = ReturnType<typeof store.getState>
 

@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router';
 import LandingPage from './routes/LandingPage';
 import Dashboard from './routes/Dashboard';
 import { Provider } from 'react-redux';
-import { store } from './dashboard/property/propertySlice';
+import { store } from './dashboard/propertySlice';
 
 
 function Main() {

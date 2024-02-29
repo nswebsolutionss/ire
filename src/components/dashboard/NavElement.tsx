@@ -4,6 +4,8 @@ import { useState } from "react";
 import { IconType } from "react-icons";
 import React from "react";
 import { Tooltip } from "react-tooltip";
+import { useDispatch } from "react-redux";
+import { NavElement, setSelectedNavElement } from "../../dashboard/propertySlice";
 
 interface ElementProps {
     label: string;
@@ -12,6 +14,7 @@ interface ElementProps {
     selectedElementId: number | null;
     setSelectedElementId: React.Dispatch<React.SetStateAction<null | number>>;
     collapsed: boolean;
+    navElementEnum: NavElement;
 }
 
 interface ContainerProps {
@@ -41,13 +44,17 @@ export const Container = styled.div<ContainerProps>`
 
 
 
-export const Element: React.FC<ElementProps> = ({ label, icon, elementId, selectedElementId, setSelectedElementId, collapsed}) => {
+export const Element: React.FC<ElementProps> = ({ label, icon, elementId, selectedElementId, setSelectedElementId, collapsed, navElementEnum}) => {
+    const dispatch = useDispatch();
     const calculateSelected = (): void => {
         if (elementId === selectedElementId) {
             setSelectedElementId(null)
             return;
         }
         setSelectedElementId(elementId);
+        dispatch(
+            setSelectedNavElement(navElementEnum)
+        )
     }
     return (
         collapsed === false ?
