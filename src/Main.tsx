@@ -1,16 +1,18 @@
 import { Route, Routes } from 'react-router';
 import LandingPage from './routes/LandingPage';
-import Dashboard from './routes/Dashboard';
+import Dashboard from './dashboard/dashboard/Dashboard';
 import { Provider } from 'react-redux';
-import { store } from './dashboard/propertySlice';
+import { store } from './redux/store';
 
 
 function Main() {
   return (
-    <Routes>
-        <Route path='/' element={<LandingPage/>}/>
-        <Route path='/dashboard' element={<Provider store={store}><Dashboard/></Provider>}/>
-    </Routes>
+    <Provider store={store}>
+      <Routes>
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/dashboard' element={<Dashboard />}/>
+      </Routes>
+    </Provider>
 
   );
 }

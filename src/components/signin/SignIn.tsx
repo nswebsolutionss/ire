@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router"
 import styled from "styled-components"
+import { useUserStateDispatch } from "../../dashboard/user-slice/useUserStateDispatch";
+import { usePropertyStateDispatch } from "../../dashboard/property-slice/usePropertyStateDispatch";
 
 
 export interface SignInProps {
@@ -54,6 +56,8 @@ const Button = styled.div`
     `
 export const SignIn: React.FC<SignInProps> = ({ visible, setVisible }) => {
     const navigate = useNavigate();
+    const { upsertUser } = useUserStateDispatch();
+    const { upsertProperty } = usePropertyStateDispatch();
     return (
 
         <Container visible={visible} setVisible={setVisible}>
@@ -67,6 +71,57 @@ export const SignIn: React.FC<SignInProps> = ({ visible, setVisible }) => {
                 e.preventDefault();
                 setVisible(false);
                 localStorage.setItem("loggedIn", "true")
+                for(let i = 0; i < 15; i++) {
+                    upsertProperty({
+                        id: Date.now() + i,
+                        address: {
+                            houseNumber : i.toString(),
+                            line2 : "Westfield Lane",
+                            town : "London",
+                            country: "United Kingdom",
+                            postcode: "W148TK"
+                        },
+                        price: "130000",
+                        dateAdded: Date.now(),
+                        propertyType: "Semi Detached",
+                        numberOfBedrooms: 4,
+                        numberOfBathrooms: 2,
+                        images: [],
+                        userCurrency: "$",
+                        description: "Hello"
+                    }
+                    )
+                }
+                
+                upsertUser({
+                    id: Date.now(),
+                    membership: {
+                        level: "Gold",
+                        billingPeriod: "Monthly",
+                        memberSinceMs: 1709848342,
+                        membershipExpiration: 1741384342,
+                        invoices: [{
+                            date: 1712526742,
+                            level: "Gold",
+                            amount: "£50.00",
+                            status: "Paid"
+                        }]
+                    },
+                    profile: {
+                        details: {
+                            companyName: "Exclusive Limited",
+                            emailAddress: "exclusive_limited@yahoo.com",
+                            telephoneNumber: "07446511454",
+                            websiteUrl: "https://google.com",
+                            facebookUrl: "https://google.com",
+                            instagramUrl: "https://google.com",
+                            description: "Hello",
+                            youtubeUrl: "https://google.com",
+                            images: []
+                        },
+                        openingTimes: []
+                    }
+                })
                 navigate("/dashboard");
 
             }}>

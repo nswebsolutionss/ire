@@ -1,19 +1,13 @@
-import styled from "styled-components";
-import { CgProfile } from "react-icons/cg";
-import { useState } from "react";
-import { IconType } from "react-icons";
 import React from "react";
-import { Tooltip } from "react-tooltip";
-import { useDispatch } from "react-redux";
-import { NavElement, setSelectedNavElement } from "../../dashboard/propertySlice";
+import { IconType } from "react-icons";
+import styled from "styled-components";
+import { useIsCollapsed, useSelectedNavElement } from "../navigation-slice/useNavigationStateSelectors";
+import { NavElement } from "../navigation-slice/navigationSlice";
+import { useNavigationStateDispatch } from "../navigation-slice/useNavigationStateDispatch";
 
 interface ElementProps {
     label: string;
     icon?: IconType;
-    elementId: number;
-    selectedElementId: number | null;
-    setSelectedElementId: React.Dispatch<React.SetStateAction<null | number>>;
-    collapsed: boolean;
     navElementEnum: NavElement;
 }
 
@@ -44,21 +38,14 @@ export const Container = styled.div<ContainerProps>`
 
 
 
-export const Element: React.FC<ElementProps> = ({ label, icon, elementId, selectedElementId, setSelectedElementId, collapsed, navElementEnum}) => {
-    const dispatch = useDispatch();
-    const calculateSelected = (): void => {
-        if (elementId === selectedElementId) {
-            setSelectedElementId(null)
-            return;
-        }
-        setSelectedElementId(elementId);
-        dispatch(
-            setSelectedNavElement(navElementEnum)
-        )
-    }
+export const Element: React.FC<ElementProps> = ({ label, icon, navElementEnum}) => {
+    const {setSelectedNavElement} = useNavigationStateDispatch();
+    const isSelected = useSelectedNavElement() === navElementEnum;
+
+
     return (
-        collapsed === false ?
-            <Container active={elementId === selectedElementId} onClick={() => calculateSelected()}>
+        useIsCollapsed() === false ?
+            <Container active={isSelected} onClick={() => setSelectedNavElement(navElementEnum)}>
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center", width: "100%" }}>
                     {
                         icon !== undefined ? React.createElement(icon, { size: 25 }) : ""
@@ -68,7 +55,7 @@ export const Element: React.FC<ElementProps> = ({ label, icon, elementId, select
                 </div>
             </Container >
             : 
-            <Container data-tooltip-id={label} data-tooltip-content={label} active={elementId === selectedElementId} onClick={() => calculateSelected()}>
+            <Container data-tooltip-id={label} data-tooltip-content={label} active={isSelected} onClick={() => setSelectedNavElement(navElementEnum)}>
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center", width: "100%" }}>
                     {
                         icon !== undefined ? React.createElement(icon, { size: 25 }) : <></>

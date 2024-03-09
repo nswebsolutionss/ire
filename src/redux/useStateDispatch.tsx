@@ -1,4 +1,4 @@
-import { Action, AnyAction, Dispatch } from "@reduxjs/toolkit";
+import { Action, Dispatch } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 
 type AnyStateDispatch = Dispatch<Action>
