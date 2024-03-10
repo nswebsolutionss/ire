@@ -5,6 +5,7 @@
 /ui-monorepo/node_modules
 /.pnp
 .pnp.js
+/opt/*
 
 # testing
 /coverage
