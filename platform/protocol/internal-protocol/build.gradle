@@ -1,0 +1,64 @@
+
+import com.generator.GradleGeneratorTask
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jsonschema2pojo:jsonschema2pojo-gradle-plugin:1.2.1'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.jsonschema2pojo' version '1.2.1'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    generateInternal.extendsFrom(implementation)
+}
+
+generateJsonSchema2Pojo {
+}
+jsonSchema2Pojo {
+    source = files('src/main/resources')
+    targetDirectory = file('src/main/java')
+    targetPackage = 'com.generated.platform.protocol.internal'
+    useTitleAsClassname = true
+    removeOldOutput = true
+    includeHashcodeAndEquals = false
+    includeAdditionalProperties = false
+    annotationStyle = 'jackson2'
+    includeGeneratedAnnotation = false
+    targetVersion = "11"
+    usePrimitives = true
+    generateBuilders = true
+    useLongIntegers = true
+    includeSetters = false
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.1'
+    implementation project(":tools")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+
+
+
+
+

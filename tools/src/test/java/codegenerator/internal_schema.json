@@ -1,0 +1,49 @@
+[
+{
+  "Tenant" : {
+    "id": "int",
+    "unitId": "int",
+    "name": "String",
+    "address": "String",
+    "emailAddress": "String",
+    "contactNumber": "String"
+  },
+
+  "PreviousAddress" : {
+    "previousAddressId" : "int",
+    "tenantInformationId": "int",
+    "address" : "String",
+    "moveInDate" : "int",
+    "moveOutDate": "int"
+  },
+  "TenantReference" : {
+    "tenantReferenceId" : "int",
+    "tenantInformationId": "int",
+    "name" : "String",
+    "emailAddress" : "String",
+    "contactNumber": "String"
+  },
+  "TenantInformation": {
+    "id": "int",
+    "tenantId" : "int",
+    "immigrationStatus" : "String",
+    "occupation" : "String",
+    "salary" : "int",
+    "dateOfBirth" : "int",
+    "previousAddress" : "PreviousAddress",
+    "tenantReference" : "TenantReference"
+  },
+  "Unit" : {
+    "id": "int",
+    "address": "String"
+  },
+  "User" : {
+    "id": "int",
+    "firstName": "String",
+    "lastName": "String",
+    "emailAddress": "String",
+    "passwordHash": "String"
+  }
+
+}
+]

@@ -6,11 +6,11 @@
 
 # Ignore Gradle build output directory
 build
-
+opt
 log
 pid
 generated
 out
 
-/ui-monorepo/node_modules/*
-/opt/*
+/node_modules
+/opt
