@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+source ./ire.functions.sh
+
+parse_args()
+{
+  case "$1" in
+    commit) commit
+    ;;
+    daoTest) daoTest
+      ;;
+    g) echo "g" && gradle "${@:2}"
+    ;;
+    drs) drs
+    ;;
+    *) usages
+      ;;
+  esac
+}
+
+main()
+{
+  ROOT_DIR=$(pwd)
+  pushd $ROOT_DIR
+
+  export JAVA_HOME=opt/amazon-corretto-21.jdk/Contents/Home
+  parse_args $@
+}
+
+main $@
+

@@ -1,0 +1,17 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'backend'
+
+def includeProject(String name, String path) {
+    include name
+    project(name).projectDir = new File(path)
+}
+
+includeProject(':database', 'database')
+includeProject(':organization-platform', 'organizationplatform')
+includeProject(':database-wrapper', 'databasewrapper')

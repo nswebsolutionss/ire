@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+plugins {
+    id "java"
+    id 'java-library'
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+    apply plugin: 'java'
+
+    defaultTasks 'unitTest'
+}
+
+tasks.register('commit') {
+    subprojects.each {
+        dependsOn("${it.name}:unitTest")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'application'
+
+    tasks.register('unitTest', Test) {
+        useJUnitPlatform {
+            excludeTags 'DaoTest'
+            excludeTags 'IntegrationTest'
+        }
+    }
+
+    tasks.register('daoTest', Test) {
+        useJUnitPlatform {
+            includeTags 'DaoTest'
+        }
+    }
+}
