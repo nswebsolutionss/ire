@@ -1,16 +1,15 @@
-import { ChangeEvent, useState } from "react";
-import { usePropertyStateDispatch } from "../../client-dashboard/property-slice/usePropertyStateDispatch";
-import { useSelectedPropertyId, useSelectedPropertyNullable } from "../../client-dashboard/property-slice/usePropertyStateSelectors";
-import { Button, InputBox, Label, HorizontalSpacer, TextArea, VerticalSpacer } from "../atoms/FormFields";
-import Select, { SingleValue } from "react-select"
-import { Address, UserCurrency } from "../../client-dashboard/property-slice/propertySlice";
+import { useMemo, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import Select from "react-select";
+import { useImageStateDispatch } from "../../client-dashboard/images-slice/useImageStateDispatch";
+import { useAllImages } from "../../client-dashboard/images-slice/useImageStateSelectors";
+import { useSelectedPropertyId } from "../../client-dashboard/property-slice/usePropertyStateSelectors";
+import { useGetPropertyQuery, useInsertPropertyMutation, useUpdatePropertyMutation } from "../../redux/api/apiSlice";
+import { Button, HorizontalSpacer, InputBox, Label, VerticalSpacer } from "../atoms/FormFields";
 import { NumberInput } from "../atoms/NumberInput";
 import { TextInput } from "../atoms/TextInput";
 import Editor from "../atoms/editor/Editor";
 import { ImageUploader } from "./ImageUploader";
-import { useAllImages } from "../../client-dashboard/images-slice/useImageStateSelectors";
-import { useImageStateDispatch } from "../../client-dashboard/images-slice/useImageStateDispatch";
 
 interface EditPropertyFormProps {
     handleClose: () => void
@@ -87,50 +86,73 @@ export const foo3 = {
     })
 }
 export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClose }) => {
-    const { upsertProperty } = usePropertyStateDispatch();
     const { deleteAllImages } = useImageStateDispatch();
 
-    const defaultAddress: Address = {
-        houseNumber: "",
-        line2: "",
-        town: "",
-        country: "",
-        postcode: ""
-    }
+    const selectedPropertyId = useSelectedPropertyId();
 
+    const [insertProperty] = useInsertPropertyMutation()
+    const [updateProperty] = useUpdatePropertyMutation()
+    const [skip, setSkip] = useState<boolean>(true)
+    const {data: property, isLoading} = useGetPropertyQuery(selectedPropertyId ?? 0)
 
-    const selectedProperty = useSelectedPropertyNullable()
     const images = useAllImages();
-    const [address, setAddress] = useState<Address>(selectedProperty?.address ?? defaultAddress)
-    const [noOfbathrooms, setNoOfBathrooms] = useState(selectedProperty?.numberOfBathrooms)
-    const [noOfbedrooms, setNoOfBedrooms] = useState(selectedProperty?.numberOfBedrooms)
-    const [price, setPrice] = useState(selectedProperty?.price)
-    const [propertyType, setPropertyType] = useState(selectedProperty?.propertyType)
-    const [description, setDescription] = useState(selectedProperty?.description ?? "")
-    const [currency, setCurrency] = useState<UserCurrency>(selectedProperty?.userCurrency ?? "£")
+    //const [address, setAddress] = useState<Address>(selectedProperty?.address ?? defaultAddress)
+    const [noOfbathrooms, setNoOfBathrooms] = useState(property?.number_of_bathrooms)
+    const [noOfbedrooms, setNoOfBedrooms] = useState(property?.number_of_bedrooms)
+    const [price, setPrice] = useState(property?.price)
+    const [propertyType, setPropertyType] = useState(property?.property_type)
+    const [description, setDescription] = useState(property?.property_description ?? "")
+//    const [currency, setCurrency] = useState<UserCurrency>(selectedProperty?.userCurrency ?? "£")
 
+    useMemo(() => {
+        if(!isLoading) {
+            setSkip(false)
+            console.log(selectedPropertyId)
+            console.log(property?.property_type)
+            console.log("NUMBER OF BATHROOMS    " + property?.number_of_bathrooms)
+            setNoOfBathrooms(property?.number_of_bathrooms)
+            setNoOfBedrooms(property?.number_of_bedrooms)
+            setPrice(property?.price)
+            setPropertyType(property?.property_type)
+            setDescription(property?.property_description ?? "")
+        }
+    }, [isLoading])
     const handleFormClose = () => {
         deleteAllImages();
         handleClose();
     }
 
-    const handleSubmit = () => {
-        upsertProperty({
-            id: selectedProperty?.id ?? Date.now(),
-            address: address,
-            propertyType: propertyType ?? "",
-            numberOfBedrooms: noOfbedrooms ?? 0,
-            numberOfBathrooms: noOfbathrooms ?? 0,
-            description: description ?? "",
-            price: price ?? "",
-            userCurrency: currency,
-            dateAdded: selectedProperty?.dateAdded ?? Date.now(),
-            images: images
-        })
+    const handleSubmit = async () => {
+        try {
+            if(selectedPropertyId) {
+                console.log("we got here")
+                await updateProperty({
+                    listing_id: selectedPropertyId ?? 0,
+                    property_type: propertyType ?? "",
+                    number_of_bedrooms: noOfbedrooms ?? 0,
+                    number_of_bathrooms: noOfbathrooms ?? 0,
+                    property_description: description ?? "",
+                    price: price ?? "",
+                    date_added: property?.date_added ?? 0,
+                })
+            }
+            else {
+                await insertProperty({
+                    listing_id:  Date.now(),
+                    property_type: propertyType ?? "",
+                    number_of_bedrooms: noOfbedrooms ?? 0,
+                    number_of_bathrooms: noOfbathrooms ?? 0,
+                    property_description: description ?? "",
+                    price: price ?? "",
+                    date_added: Date.now(),
+                })
+            }
+            
+        } catch(err) {
+            console.error(err)
+        }
         deleteAllImages();
         handleClose();
-
-
     }
 
     const handleDescriptionChange = (val: string): void => {
@@ -153,37 +175,7 @@ export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClo
         console.log()
         const value = e.target.value;
         const name = e.target.name;
-        setAddress((prevState) => ({
-            ...prevState,
-            [name]: value
-        })
-        )
-    }
-
-    const handleSelectAddressStateChange = (value: SingleValue<string>, name: string) => {
-        setAddress((prevState) => ({
-            ...prevState,
-            [name]: value
-        })
-        )
-    }
-
-    const mapCurrency = (suppliedCurrency: string | undefined): UserCurrency => {
-        if (!suppliedCurrency) {
-            return '£'
-        }
-        switch (suppliedCurrency) {
-            case "£":
-                return '£'
-            case "$":
-                return '$'
-            case "zł":
-                return 'zł'
-            case "€":
-                return '€'
-            default:
-                return '£'
-        }
+    
     }
 
     const onPriceValueChange = (value: string) => {
@@ -216,26 +208,28 @@ export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClo
 
                 <Label style={{ alignSelf: "start" }}>Postcode</Label>
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <InputBox name="postcode" style={{ width: "180px", height: "35px", borderTopRightRadius: "0px", borderBottomRightRadius: "0px", borderRight: "none" }} value={address?.postcode} onChange={(e) => handleInputAddressStateChange(e)}></InputBox>
+                    <InputBox name="postcode" style={{ width: "180px", height: "35px", borderTopRightRadius: "0px", borderBottomRightRadius: "0px", borderRight: "none" }} value={""} onChange={(e) => handleInputAddressStateChange(e)}></InputBox>
                     <Button style={{ margin: "0px", height: "35px", width: "130px", borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px", fontSize: "14px" }}>Find Address</Button>
                 </span>
+                
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Label style={{ alignSelf: "start" }}>Flat / House Number</Label>
-                        <TextInput name="houseNumber" value={address.houseNumber} onValueChange={handleInputAddressStateChange}></TextInput>
+                        <TextInput name="houseNumber" value={""} onValueChange={handleInputAddressStateChange}></TextInput>
                     </div>
                 </span>
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Label style={{ alignSelf: "start" }}>Address Line 2</Label>
-                        <TextInput name="line2" value={address.line2} onValueChange={handleInputAddressStateChange}></TextInput>
+                        <TextInput name="line2" value={""} onValueChange={handleInputAddressStateChange}></TextInput>
                     </div>
                 </span>
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Label style={{ alignSelf: "start" }}>Town</Label>
-                        <TextInput name="town" value={address.town} onValueChange={handleInputAddressStateChange}></TextInput>
+                        <TextInput name="town" value={""} onValueChange={handleInputAddressStateChange}></TextInput>
                     </div>
+                    
                     <HorizontalSpacer />
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Label style={{ alignSelf: "start" }}>Property Type</Label>
@@ -245,7 +239,7 @@ export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClo
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Label style={{ alignSelf: "start" }}>Country</Label>
-                        <Select name="country" styles={foo} isClearable options={countries} value={handleSelectValueChanging(address.country)} onChange={(e) => handleSelectAddressStateChange(e?.value ?? "", "country")}></Select>
+                        <Select name="country" styles={foo} isClearable options={countries} value={handleSelectValueChanging("")}></Select>
                     </div>
                     <HorizontalSpacer />
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -268,14 +262,14 @@ export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClo
                 <p style={{ fontFamily: "inherit", fontSize: "26px", fontWeight: "500", color: "rgba(0, 0,0 ,0.4)", alignSelf: "start" }}>Sale Information</p>
                 <Label style={{ alignSelf: "start" }}>Price</Label>
                 <span style={{ alignSelf: "start", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    <Select menuPlacement="auto" components={{ IndicatorSeparator: () => null }} value={handleSelectValueChanging(currency ?? "£")} isSearchable={false} styles={foo3} options={currencies} onChange={(val) => setCurrency(mapCurrency(val?.value))}></Select>
+                    <Select menuPlacement="auto" components={{ IndicatorSeparator: () => null }} value={""} isSearchable={false} styles={foo3} ></Select>
                     <NumberInput value={price ?? ""} onValueChange={onPriceValueChange} />
                 </span>
 
                 <VerticalSpacer />
 
                 <p style={{ fontFamily: "inherit", fontSize: "26px", fontWeight: "500", color: "rgba(0, 0,0 ,0.4)", alignSelf: "start" }}>Images & Videos</p>
-                <ImageUploader cleanImages={selectedProperty?.images ?? null} />
+                <ImageUploader cleanImages={null} />
                 <Button onClick={() => handleSubmit()}>Submit</Button>
             </div>
         </div>

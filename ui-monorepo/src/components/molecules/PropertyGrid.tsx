@@ -24,7 +24,7 @@ const AddListing = styled.div`
     }
 `
 
-export const PropertyGrid: React.FC<{onAddProperty: React.Dispatch<React.SetStateAction<boolean | undefined>>, title: string, columnData: ColDef[], rowData: {}[] }> = ({ onAddProperty, columnData, rowData }) => {
+export const PropertyGrid: React.FC<{ onAddProperty: React.Dispatch<React.SetStateAction<boolean | undefined>>, title: string, columnData: ColDef[], rowData: {}[] }> = ({ onAddProperty, columnData, rowData }) => {
 
     const gridRef = useRef<AgGridReact>(null);
     const [inputVal, setInputVal] = useState("");
@@ -52,16 +52,17 @@ export const PropertyGrid: React.FC<{onAddProperty: React.Dispatch<React.SetStat
     }, []);
 
     return (
-        <div className="ag-theme-quartz" style={{ height: "70%", width: "100%" }}>
+        <div className="ag-theme-quartz" style={{ height: "70%", width: "90%" }}>
             <span style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <TextInput placeholder="Search..." name="" value={inputVal} onValueChange={(e) => onFilterTextBoxChanged(e)} />
                 <AddListing onClick={() => onAddProperty(true)}>
-                    <IoIosAddCircleOutline style={{ color: "white", marginRight: "5px", marginLeft: "5px"}} size={25} />
-                    <p style={{marginRight: "10px"}}>Add Listing</p>
+                    <IoIosAddCircleOutline style={{ color: "white", marginRight: "5px", marginLeft: "5px" }} size={25} />
+                    <p style={{ marginRight: "10px" }}>Add Listing</p>
                 </AddListing>
             </span>
             <VerticalSpacer size={"5"} />
             <AgGridReact
+                enableCellTextSelection={true}
                 ref={gridRef}
                 getRowId={(params) => params.data.id}
                 rowData={rowData}

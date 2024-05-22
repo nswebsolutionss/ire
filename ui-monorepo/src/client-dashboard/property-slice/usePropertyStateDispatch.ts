@@ -13,28 +13,20 @@
         },
  */
 
-import { useDispatch } from "react-redux";
-import { Address, PropertyState, propertySlice } from "./propertySlice";
 import { useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { propertySlice } from "./propertySlice";
 
 export interface PropertyStateDispatch {
-    upsertProperty: (property: PropertyState) => void;
     setSelectedPropertyId: (propertyId: { id: number | null }) => void;
-    deletePropertyById: (propertyId: {id: number | null}) => void;
 }
 
 export const usePropertyStateDispatch = (): PropertyStateDispatch => {
     const dispatch = useDispatch();
     return useMemo(
     () => ({
-        upsertProperty: (property) => {
-            dispatch(propertySlice.actions.upsertProperty(property))
-        },
         setSelectedPropertyId: (id) => {
             dispatch(propertySlice.actions.setSelectedPropertyId(id))
-        },
-        deletePropertyById: (id) => {
-            dispatch(propertySlice.actions.deletePropertyById(id))
         }
     }), [dispatch])
 }

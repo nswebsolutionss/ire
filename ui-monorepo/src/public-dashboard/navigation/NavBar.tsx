@@ -35,7 +35,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
                 </Container>
             </div>
         
-            {visible ? <SignIn afterSignInUrl={"/dashboard"}/>  : <></>}
+            <SignIn afterSignInUrl={"/dashboard"}/>
             
         </>
     )

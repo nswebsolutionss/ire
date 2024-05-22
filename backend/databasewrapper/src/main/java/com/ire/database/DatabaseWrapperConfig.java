@@ -9,6 +9,7 @@ public class DatabaseWrapperConfig {
         return "ire";
     }
 
+
     public String getSqlFilePath() {
         return "/Users/steviehubble/Workspace/internationalRealEstate/ire/backend/databasewrapper/src/main/resources/user.sql";
     }
