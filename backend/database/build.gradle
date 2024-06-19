@@ -13,6 +13,7 @@ dependencies{
     implementation('io.vertx:vertx-pg-client:4.5.7')
     implementation('io.vertx:vertx-web:4.4.0')
     implementation('io.vertx:vertx-auth-jwt:4.4.0')
+    implementation project(':domain-protocol')
 }
 
 

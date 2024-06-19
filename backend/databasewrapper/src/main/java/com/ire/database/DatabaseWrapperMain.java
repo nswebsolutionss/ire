@@ -18,7 +18,7 @@ public class DatabaseWrapperMain {
      * TODO: Better pattern for executing bash commands is needed
      * @param args
      */
-    public static void main(final String[] args) {
+    public static void databaseWrapper(final String... args) {
 
         LOGGER.info("Arguments passed: {}", Arrays.toString(args));
 

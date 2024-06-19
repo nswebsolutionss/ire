@@ -1,7 +1,7 @@
 package com.ire.organizationplatform.service.contract;
 
-import com.ire.backend.database.OrganizationInformation;
-import io.vertx.core.Future;
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
+import com.generated.organizationplatform.protocol.domain.PropertyDetails;
 
 public interface OrganizationServiceInteraction {
 
@@ -12,4 +12,12 @@ public interface OrganizationServiceInteraction {
     String deleteOrganizationInformation(final String uuid);
 
     OrganizationInformation getOrganizationInformation(final String uuid);
+
+    String createPropertyDetails(final PropertyDetails request);
+
+    String updatePropertyDetails(final PropertyDetails propertyDetails);
+
+    String deletePropertyDetails(final String uuid);
+
+    PropertyDetails getPropertyDetails(final String uuid);
 }

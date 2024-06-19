@@ -1,7 +1,7 @@
 package com.ire.backend.database.dao;
 
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.ire.backend.database.DataSourceFactory;
-import com.ire.backend.database.OrganizationInformation;
 import com.ire.backend.database.OrganizationInformationDaoImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
@@ -155,15 +155,15 @@ public class OrganizationInformationDaoTest {
     private static void assertOrganizationInformation(OrganizationInformation actualOrgInfo, OrganizationInformation expectedOrgInfo) {
         Assertions.assertNotNull(actualOrgInfo);
 
-        Assertions.assertEquals(expectedOrgInfo.id(), actualOrgInfo.id());
-        Assertions.assertEquals(expectedOrgInfo.companyName(), actualOrgInfo.companyName());
-        Assertions.assertEquals(expectedOrgInfo.companyDescription(), actualOrgInfo.companyDescription());
-        Assertions.assertEquals(expectedOrgInfo.telephoneNumber(), actualOrgInfo.telephoneNumber());
-        Assertions.assertEquals(expectedOrgInfo.websiteUrl(), actualOrgInfo.websiteUrl());
-        Assertions.assertEquals(expectedOrgInfo.facebookUrl(), actualOrgInfo.facebookUrl());
-        Assertions.assertEquals(expectedOrgInfo.instagramUrl(), actualOrgInfo.instagramUrl());
-        Assertions.assertEquals(expectedOrgInfo.youtubeUrl(), actualOrgInfo.youtubeUrl());
-        Assertions.assertEquals(expectedOrgInfo.memberSince(), actualOrgInfo.memberSince());
-        Assertions.assertEquals(expectedOrgInfo.lastUpdated(), actualOrgInfo.lastUpdated());
+        Assertions.assertEquals(expectedOrgInfo.getId(), actualOrgInfo.getId());
+        Assertions.assertEquals(expectedOrgInfo.getCompanyName(), actualOrgInfo.getCompanyName());
+        Assertions.assertEquals(expectedOrgInfo.getCompanyDescription(), actualOrgInfo.getCompanyDescription());
+        Assertions.assertEquals(expectedOrgInfo.getTelephoneNumber(), actualOrgInfo.getTelephoneNumber());
+        Assertions.assertEquals(expectedOrgInfo.getWebsiteUrl(), actualOrgInfo.getWebsiteUrl());
+        Assertions.assertEquals(expectedOrgInfo.getFacebookUrl(), actualOrgInfo.getFacebookUrl());
+        Assertions.assertEquals(expectedOrgInfo.getInstagramUrl(), actualOrgInfo.getInstagramUrl());
+        Assertions.assertEquals(expectedOrgInfo.getYoutubeUrl(), actualOrgInfo.getYoutubeUrl());
+        Assertions.assertEquals(expectedOrgInfo.getMemberSince(), actualOrgInfo.getMemberSince());
+        Assertions.assertEquals(expectedOrgInfo.getLastUpdated(), actualOrgInfo.getLastUpdated());
     }
 }

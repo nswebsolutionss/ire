@@ -1,10 +1,6 @@
 package com.ire.organizationplatform.service.support;
 
 import com.ire.organizationplatform.service.OrganizationPlatformMain;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
@@ -13,6 +9,9 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback
@@ -29,6 +28,10 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback
 
     public static IntegrationDsl newDsl() {
         return newDsl(List.of());
+    }
+
+    public static IntegrationDsl newDslIgnoringIds() {
+        return newDsl(List.of("id"));
     }
 
     public static IntegrationDsl newDsl(List<String> ignoredResolvers) {

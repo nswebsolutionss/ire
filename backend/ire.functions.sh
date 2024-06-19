@@ -9,7 +9,7 @@ function usages() {
 
 function drs() {
   gradle build
-  java -jar databasewrapper/build/libs/database-wrapper.jar DEPLOY
+  ./build/buildartifacts/dists/database-wrapper/bin/database-wrapper DEPLOY
 }
 commit()
 {
@@ -19,6 +19,11 @@ commit()
 daoTest()
 {
   ./gradlew daoTest
+}
+
+package()
+{
+  ./gradlew installDist
 }
 
 gradle()

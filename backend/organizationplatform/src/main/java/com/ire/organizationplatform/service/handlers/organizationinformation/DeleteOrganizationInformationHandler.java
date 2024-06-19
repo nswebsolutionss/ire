@@ -1,15 +1,15 @@
 package com.ire.organizationplatform.service.handlers.organizationinformation;
 
-import com.ire.organizationplatform.service.handlers.ProcessingHandler;
-import com.ire.organizationplatform.service.response.ResponseHelper;
+import com.generated.organizationplatform.protocol.request.Request;
+import com.generated.organizationplatform.protocol.response.Response;
+import com.ire.organizationplatform.service.ResponseHelper;
 import com.ire.organizationplatform.service.contract.OrganizationServiceInteraction;
-import com.ire.organizationplatform.service.request.IdRequest;
-import com.ire.organizationplatform.service.response.IdResponse;
+import com.ire.organizationplatform.service.handlers.ProcessingHandler;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DeleteOrganizationInformationHandler implements ProcessingHandler<IdRequest> {
+public class DeleteOrganizationInformationHandler implements ProcessingHandler<Request> {
 
     private static final Logger LOGGER = LogManager.getLogger(DeleteOrganizationInformationHandler.class);
     private final OrganizationServiceInteraction serviceInteraction;
@@ -21,17 +21,17 @@ public class DeleteOrganizationInformationHandler implements ProcessingHandler<I
     @Override
     public void handle(
             final RoutingContext routingContext,
-            final IdRequest request
+            final Request request
     ) {
         routingContext.vertx().executeBlocking(() ->
-                serviceInteraction.deleteOrganizationInformation(request.id()), false
+                serviceInteraction.deleteOrganizationInformation(request.getId()), false
         ).onComplete(res -> {
                     if (res.succeeded()) {
                         if (res.result() == null) {
-                            ResponseHelper.resourceNotFound(routingContext, new IdResponse(request.id(), "Unable to delete Organization Information"));
+                            ResponseHelper.resourceNotFound(routingContext, new Response(request.getId(), "Unable to delete Organization Information"));
                         }
                         else {
-                            ResponseHelper.ok(routingContext, new IdResponse(res.result(), "Successfully deleted Organization Information"));
+                            ResponseHelper.ok(routingContext, new Response(res.result(), "Successfully deleted Organization Information"));
                         }
                     } else {
                         LOGGER.error("Unable to write to database: ", res.cause());

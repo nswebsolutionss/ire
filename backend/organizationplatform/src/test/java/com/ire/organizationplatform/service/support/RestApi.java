@@ -17,6 +17,7 @@ import io.vertx.ext.web.client.WebClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.awaitility.Awaitility;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 
@@ -39,6 +40,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private CompletableFuture<HttpResponse<Buffer>> future = new CompletableFuture<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final List<String> ignoredResolvers = new ArrayList<>();
+    public static final List<String> idsSeen = new ArrayList<>();
 
     public RestApi(List<String> ignoredResolvers) {
         this.vertx = Vertx.vertx();
@@ -103,7 +105,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private void waitForResponseAndAssert(ResponseMessage expected) {
 
         Awaitility.await(Thread.currentThread().getName())
-                .timeout(30, TimeUnit.SECONDS)
+                .timeout(10, TimeUnit.SECONDS)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .untilAsserted(
                         () -> {
@@ -121,7 +123,13 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                             LOGGER.info("----------------------------------------------------------------------------");
                             Assertions.assertEquals(expected.statusCode, actualResponse.statusCode);
 
-                            assertResponseBody(expected, actualResponse);
+                            String actualEncoded = Json.encode(actualResponse.contentBody);
+                            String expectedEncoded = Json.encode(expected.contentBody);
+
+                            JSONObject expectedJson = new JSONObject(expectedEncoded);
+                            JSONObject actualJson = new JSONObject(actualEncoded);
+
+                            assertResponseBody(expectedJson, actualJson);
 
                             Assertions.assertEquals(expected.contentType, actualResponse.contentType);
                             Assertions.assertEquals(expected.headers, actualResponse.headers);
@@ -130,19 +138,24 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                 );
     }
 
-    private void assertResponseBody(ResponseMessage expected, ResponseMessage actual) {
-        String actualEncoded = Json.encode(actual.contentBody);
-        String expectedEncoded = Json.encode(expected.contentBody);
-
-        JSONObject expectedJson = new JSONObject(expectedEncoded);
-        JSONObject actualJson = new JSONObject(actualEncoded);
-
-        expectedJson.keys().forEachRemaining(key -> {
+    private void assertResponseBody(JSONObject expected, JSONObject actual) {
+        expected.keys().forEachRemaining(key -> {
             if (ignoredResolvers.contains(key)) {
-                Assertions.assertTrue(actualJson.has(key));
+                Assertions.assertTrue(actual.has(key));
+                idsSeen.add((String)actual.get(key));
                 return;
             }
-            Assertions.assertEquals(expectedJson.get(key), actualJson.get(key));
+            if(actual.get(key) instanceof JSONObject)
+            {
+                assertResponseBody((JSONObject) expected.get(key), (JSONObject) actual.get(key));
+            }
+            else if(actual.get(key) instanceof JSONArray)
+            {
+                Assertions.assertTrue(((JSONArray) actual.get(key)).isEmpty());
+            }
+            else {
+                Assertions.assertEquals(expected.get(key), actual.get(key));
+            }
         });
 
 
@@ -177,11 +190,11 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private HttpResponse<Buffer> getResponse() {
         if (pendingRequestList.isEmpty() && responses.isEmpty()) {
         } else if (!responses.isEmpty()) {
-            return responses.remove(0);
+            return responses.getLast();
         } else {
             while (!pendingRequestList.isEmpty()) {
 
-                CompletableFuture<HttpResponse<Buffer>> pendingRequest = pendingRequestList.remove(0);
+                CompletableFuture<HttpResponse<Buffer>> pendingRequest = pendingRequestList.getLast();
                 try {
                     HttpResponse<Buffer> bufferHttpResponse = pendingRequest.get(10, TimeUnit.SECONDS);
                     responses.add(bufferHttpResponse);

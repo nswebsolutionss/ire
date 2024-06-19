@@ -1,9 +1,8 @@
 package com.ire.organizationplatform.service.handlers;
 
-import com.ire.organizationplatform.service.response.IdResponse;
-import com.ire.organizationplatform.service.response.ResponseHelper;
+import com.generated.organizationplatform.protocol.response.Response;
+import com.ire.organizationplatform.service.ResponseHelper;
 import io.vertx.core.Handler;
-import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +29,7 @@ public class JsonDecodingHandler<T> implements Handler<RoutingContext> {
 
             } catch (Exception e) {
                 LOGGER.error("Failed to decode request: " + e);
-                ResponseHelper.badRequest(routingContext, new IdResponse("", "Failed to decode request"));
+                ResponseHelper.badRequest(routingContext, new Response("", "Failed to decode request"));
             }
         });
     }

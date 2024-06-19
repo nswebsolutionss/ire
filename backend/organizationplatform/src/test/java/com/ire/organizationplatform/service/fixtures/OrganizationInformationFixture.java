@@ -1,9 +1,9 @@
 package com.ire.organizationplatform.service.fixtures;
 
-import com.ire.backend.database.OrganizationInformation;
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
+import com.generated.organizationplatform.protocol.response.Response;
 import com.ire.organizationplatform.service.messages.OrganizationInformationRequestMessage;
 import com.ire.organizationplatform.service.messages.SuccessResponseMessage;
-import com.ire.organizationplatform.service.response.IdResponse;
 import com.ire.organizationplatform.service.support.ContentType;
 import io.vertx.core.http.HttpMethod;
 
@@ -113,21 +113,21 @@ public class OrganizationInformationFixture {
     // Responses
 
     public SuccessResponseMessage successResponse(final String message) {
-        IdResponse contentBody = new IdResponse(id, message);
+        Response contentBody = new Response(id, message);
         return new SuccessResponseMessage().statusCode(200)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);
     }
 
     public SuccessResponseMessage notFoundResponse(final String message) {
-        IdResponse contentBody = new IdResponse(id, message);
+        Response contentBody = new Response(id, message);
         return new SuccessResponseMessage().statusCode(404)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);
     }
 
     public SuccessResponseMessage conflictResponse(final String message) {
-        IdResponse contentBody = new IdResponse(id, message);
+        Response contentBody = new Response(id, message);
         return new SuccessResponseMessage().statusCode(409)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);

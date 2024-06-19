@@ -1,0 +1,16 @@
+{
+  "title": "Request",
+  "type": "object",
+  "javaInterfaces": [
+    "com.organizationplatform.protocol.request.RequestInterface"
+  ],
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "string",
+      "existingJavaType": "String",
+      "default": -1,
+      "description": "The Id"
+    }
+  }
+}

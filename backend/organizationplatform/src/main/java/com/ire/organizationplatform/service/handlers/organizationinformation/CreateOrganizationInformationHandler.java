@@ -2,11 +2,11 @@ package com.ire.organizationplatform.service.handlers.organizationinformation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.ire.backend.database.OrganizationInformation;
-import com.ire.organizationplatform.service.response.ResponseHelper;
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
+import com.generated.organizationplatform.protocol.response.Response;
+import com.ire.organizationplatform.service.ResponseHelper;
 import com.ire.organizationplatform.service.contract.OrganizationServiceInteraction;
 import com.ire.organizationplatform.service.handlers.ProcessingHandler;
-import com.ire.organizationplatform.service.response.IdResponse;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,13 +32,13 @@ public class CreateOrganizationInformationHandler implements ProcessingHandler<O
         ).onComplete(res -> {
                     if (res.succeeded()) {
                         if(res.result().isEmpty()) {
-                            ResponseHelper.conflict(routingContext, new IdResponse(request.id(), "Organization Information already exists"));
+                            ResponseHelper.conflict(routingContext, new Response(request.getId(), "Organization Information already exists"));
                         }
                         else if (res.result() == null) {
-                            ResponseHelper.badRequest(routingContext, new IdResponse(request.id(), "Unable to create Organization Information"));
+                            ResponseHelper.badRequest(routingContext, new Response(request.getId(), "Unable to create Organization Information"));
                         }
                         else {
-                            ResponseHelper.ok(routingContext, new IdResponse(res.result(), "Successfully created Organization Information"));
+                            ResponseHelper.ok(routingContext, new Response(res.result(), "Successfully created Organization Information"));
                         }
                     } else {
                         LOGGER.error("Unable to write to database: ", res.cause());

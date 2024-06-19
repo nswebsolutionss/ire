@@ -15,3 +15,7 @@ def includeProject(String name, String path) {
 includeProject(':database', 'database')
 includeProject(':organization-platform', 'organizationplatform')
 includeProject(':database-wrapper', 'databasewrapper')
+includeProject(':release', 'release')
+includeProject(':domain-protocol', 'organizationplatformprotocol/domain-protocol')
+includeProject(':request-protocol', 'organizationplatformprotocol/request-protocol')
+includeProject(':response-protocol', 'organizationplatformprotocol/response-protocol')

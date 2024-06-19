@@ -1,6 +1,8 @@
 package com.ire.organizationplatform.service;
 
-import com.ire.backend.database.OrganizationInformation;
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
+import com.generated.organizationplatform.protocol.domain.PropertyDetails;
+import com.generated.organizationplatform.protocol.request.Request;
 import com.ire.organizationplatform.service.contract.OrganizationServiceInteraction;
 import com.ire.organizationplatform.service.handlers.JsonDecodingHandler;
 import com.ire.organizationplatform.service.handlers.UrlParamsDecodingHandler;
@@ -8,8 +10,11 @@ import com.ire.organizationplatform.service.handlers.organizationinformation.Cre
 import com.ire.organizationplatform.service.handlers.organizationinformation.DeleteOrganizationInformationHandler;
 import com.ire.organizationplatform.service.handlers.organizationinformation.GetOrganizationInformationHandler;
 import com.ire.organizationplatform.service.handlers.organizationinformation.UpdateOrganizationInformationHandler;
+import com.ire.organizationplatform.service.handlers.propertydetails.CreatePropertyDetailsHandler;
+import com.ire.organizationplatform.service.handlers.propertydetails.DeletePropertyDetailsHandler;
+import com.ire.organizationplatform.service.handlers.propertydetails.GetPropertyDetailsHandler;
+import com.ire.organizationplatform.service.handlers.propertydetails.UpdatePropertyDetailsHandler;
 import com.ire.organizationplatform.service.interaction.OrganizationInformationInteractionImpl;
-import com.ire.organizationplatform.service.request.IdRequest;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpMethod;
@@ -48,10 +53,23 @@ public class OrganizationPlatformMain extends AbstractVerticle {
                 new JsonDecodingHandler<>(OrganizationInformation.class, new UpdateOrganizationInformationHandler(serviceInteraction))
         );
         router.get("/api/organizationInformation/:id").handler(
-                new UrlParamsDecodingHandler<>(IdRequest.class, new GetOrganizationInformationHandler(serviceInteraction))
+                new UrlParamsDecodingHandler<>(Request.class, new GetOrganizationInformationHandler(serviceInteraction))
         );
         router.delete("/api/organizationInformation/:id").handler(
-                new UrlParamsDecodingHandler<>(IdRequest.class, new DeleteOrganizationInformationHandler(serviceInteraction))
+                new UrlParamsDecodingHandler<>(Request.class, new DeleteOrganizationInformationHandler(serviceInteraction))
+        );
+
+        router.post("/api/properties").handler(
+                new JsonDecodingHandler<>(PropertyDetails.class, new CreatePropertyDetailsHandler(serviceInteraction))
+        );
+        router.put("/api/properties").handler(
+                new JsonDecodingHandler<>(PropertyDetails.class, new UpdatePropertyDetailsHandler(serviceInteraction))
+        );
+        router.get("/api/properties/:id").handler(
+                new UrlParamsDecodingHandler<>(Request.class, new GetPropertyDetailsHandler(serviceInteraction))
+        );
+        router.delete("/api/properties/:id").handler(
+                new UrlParamsDecodingHandler<>(Request.class, new DeletePropertyDetailsHandler(serviceInteraction))
         );
 
     }

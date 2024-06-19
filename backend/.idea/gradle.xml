@@ -27,6 +27,10 @@
             <option value="$PROJECT_DIR$/database" />
             <option value="$PROJECT_DIR$/databasewrapper" />
             <option value="$PROJECT_DIR$/organizationplatform" />
+            <option value="$PROJECT_DIR$/organizationplatformprotocol/domain-protocol" />
+            <option value="$PROJECT_DIR$/organizationplatformprotocol/request-protocol" />
+            <option value="$PROJECT_DIR$/organizationplatformprotocol/response-protocol" />
+            <option value="$PROJECT_DIR$/release" />
           </set>
         </option>
       </GradleProjectSettings>

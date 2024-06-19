@@ -3,8 +3,14 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/databasewrapper/backend.database-wrapper.main.iml" filepath="$PROJECT_DIR$/.idea/modules/databasewrapper/backend.database-wrapper.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/domain-protocol/backend.domain-protocol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/domain-protocol/backend.domain-protocol.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatform/backend.organization-platform.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatform/backend.organization-platform.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatform/backend.organization-platform.test.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatform/backend.organization-platform.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/release/backend.release.main.iml" filepath="$PROJECT_DIR$/.idea/modules/release/backend.release.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.test.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.test.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.test.iml" />
     </modules>
   </component>
 </project>

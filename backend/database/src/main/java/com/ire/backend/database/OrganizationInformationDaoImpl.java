@@ -1,16 +1,14 @@
 package com.ire.backend.database;
 
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.ire.backend.database.dao.RestDao;
-import io.vertx.sqlclient.Row;
-import io.vertx.sqlclient.RowSet;
-import io.vertx.sqlclient.SqlClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-import java.sql.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.ire.backend.database.DataSourceFactory.closeConnection;
 import static java.sql.Types.OTHER;
@@ -37,16 +35,16 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
                     "last_updated) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", idColumn);
 
-            ps.setObject(1, organizationInformation.id(), OTHER);
-            ps.setString(2, organizationInformation.companyName());
-            ps.setString(3, organizationInformation.companyDescription());
-            ps.setString(4, organizationInformation.telephoneNumber());
-            ps.setString(5, organizationInformation.websiteUrl());
-            ps.setString(6, organizationInformation.facebookUrl());
-            ps.setString(7, organizationInformation.instagramUrl());
-            ps.setString(8, organizationInformation.youtubeUrl());
-            ps.setLong(9, organizationInformation.memberSince());
-            ps.setLong(10, organizationInformation.lastUpdated());
+            ps.setObject(1, organizationInformation.getId(), OTHER);
+            ps.setString(2, organizationInformation.getCompanyName());
+            ps.setString(3, organizationInformation.getCompanyDescription());
+            ps.setString(4, organizationInformation.getTelephoneNumber());
+            ps.setString(5, organizationInformation.getWebsiteUrl());
+            ps.setString(6, organizationInformation.getFacebookUrl());
+            ps.setString(7, organizationInformation.getInstagramUrl());
+            ps.setString(8, organizationInformation.getYoutubeUrl());
+            ps.setLong(9, organizationInformation.getMemberSince());
+            ps.setLong(10, organizationInformation.getLastUpdated());
             ps.execute();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -154,16 +152,16 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
             String generatedKey = null;
             PreparedStatement ps = connection.prepareStatement(sql, 1);
 
-            ps.setString(1, organizationInformation.companyName());
-            ps.setString(2, organizationInformation.companyDescription());
-            ps.setString(3, organizationInformation.telephoneNumber());
-            ps.setString(4, organizationInformation.websiteUrl());
-            ps.setString(5, organizationInformation.facebookUrl());
-            ps.setString(6, organizationInformation.instagramUrl());
-            ps.setString(7, organizationInformation.youtubeUrl());
-            ps.setLong(8, organizationInformation.memberSince());
-            ps.setLong(9, organizationInformation.lastUpdated());
-            ps.setObject(10, organizationInformation.id(), OTHER);
+            ps.setString(1, organizationInformation.getCompanyName());
+            ps.setString(2, organizationInformation.getCompanyDescription());
+            ps.setString(3, organizationInformation.getTelephoneNumber());
+            ps.setString(4, organizationInformation.getWebsiteUrl());
+            ps.setString(5, organizationInformation.getFacebookUrl());
+            ps.setString(6, organizationInformation.getInstagramUrl());
+            ps.setString(7, organizationInformation.getYoutubeUrl());
+            ps.setLong(8, organizationInformation.getMemberSince());
+            ps.setLong(9, organizationInformation.getLastUpdated());
+            ps.setObject(10, organizationInformation.getId(), OTHER);
 
             ps.execute();
 

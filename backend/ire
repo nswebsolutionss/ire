@@ -13,6 +13,8 @@ parse_args()
     ;;
     drs) drs
     ;;
+    package) gradle clean && package
+    ;;
     *) usages
       ;;
   esac

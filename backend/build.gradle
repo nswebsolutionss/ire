@@ -3,10 +3,12 @@ buildscript {
         mavenCentral()
     }
 }
+
 plugins {
     id "java"
     id 'java-library'
 }
+def distDir = "$rootDir/build/buildartifacts/dists"
 
 allprojects {
     repositories {
@@ -23,9 +25,24 @@ tasks.register('commit') {
     }
 }
 
+configure(subprojects) {
+    apply plugin: 'application'
+
+    installDist {
+        enabled = true
+        destinationDir = new File("$distDir/${project.name}")
+        dependsOn(':commit')
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'application'
+
+    installDist {
+        enabled = true
+        destinationDir = new File("$distDir/${project.name}")
+    }
 
     tasks.register('unitTest', Test) {
         useJUnitPlatform {
@@ -39,4 +56,10 @@ subprojects {
             includeTags 'DaoTest'
         }
     }
+    tasks.register('integrationTest', Test) {
+        useJUnitPlatform {
+            includeTags 'IntegrationTest'
+        }
+    }
+
 }

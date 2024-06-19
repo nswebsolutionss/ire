@@ -1,4 +1,4 @@
-package com.ire.organizationplatform.service.response;
+package com.ire.organizationplatform.service;
 
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.buffer.impl.BufferImpl;

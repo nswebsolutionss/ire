@@ -1,0 +1,42 @@
+{
+  "title": "OrganizationInformation",
+  "type": "object",
+  "javaInterfaces": [],
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "string",
+      "existingJavaType": "String",
+      "description": "Identifier of the organization"
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "companyDescription": {
+      "type": "string"
+    },
+    "telephoneNumber": {
+      "type": "string"
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "facebookUrl": {
+      "type": "string"
+    },
+    "instagramUrl": {
+      "type": "string"
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
+    "memberSince": {
+      "type": "number",
+      "existingJavaType": "Long"
+    },
+    "lastUpdated": {
+      "type": "number",
+      "existingJavaType": "Long"
+    }
+  }
+}

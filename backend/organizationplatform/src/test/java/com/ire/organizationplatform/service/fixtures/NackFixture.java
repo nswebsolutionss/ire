@@ -1,9 +1,9 @@
 package com.ire.organizationplatform.service.fixtures;
 
-import com.ire.backend.database.OrganizationInformation;
+import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
+import com.generated.organizationplatform.protocol.response.Response;
 import com.ire.organizationplatform.service.messages.OrganizationInformationRequestMessage;
 import com.ire.organizationplatform.service.messages.SuccessResponseMessage;
-import com.ire.organizationplatform.service.response.IdResponse;
 import com.ire.organizationplatform.service.support.ContentType;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
@@ -38,7 +38,7 @@ public class NackFixture {
 
 
     public SuccessResponseMessage malformedJsonResponse(String message) {
-        IdResponse contentBody = new IdResponse("", message);
+        Response contentBody = new Response("", message);
         return new SuccessResponseMessage().statusCode(400)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);

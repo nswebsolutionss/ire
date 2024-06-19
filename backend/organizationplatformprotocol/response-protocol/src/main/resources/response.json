@@ -1,0 +1,16 @@
+{
+  "title": "Response",
+  "type": "object",
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "string",
+      "existingJavaType": "String",
+      "default": -1,
+      "description": "The Id"
+    },
+    "message": {
+      "existingJavaType": "Object"
+    }
+  }
+}
