@@ -8,6 +8,7 @@ export PGSQL_DATA=$OPT_HOME/pgsqlData/data
 
 mkdir -p $OPT_HOME
 mkdir -p $PGSQL_HOME
+mkdir -p $PGSQL_DATA
 
 echo "Downloading Postgres 15.2 "
 curl -sS https://ftp.postgresql.org/pub/source/v15.2/postgresql-15.2.tar.gz --output opt/postgres-15.2.tar.gz
@@ -19,12 +20,9 @@ cd $POSTGRES_HOME
 ./configure --prefix $PGSQL_HOME --without-readline
 make > /dev/null
 make install > /dev/null
-rm -r $OPT_HOME/postgresql-15.2
+cd $CURRENT_DIR
 
-pushd $OPT_HOME
 
-tar cfz packages/postgres-15.2.tar.gz pgsql
 
-popd
-rm -r $PGSQL_HOME
+
 

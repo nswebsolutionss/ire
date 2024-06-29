@@ -21,6 +21,7 @@ allprojects {
 
 tasks.register('commit') {
     subprojects.each {
+        dependsOn("${it.name}:build")
         dependsOn("${it.name}:unitTest")
     }
 }

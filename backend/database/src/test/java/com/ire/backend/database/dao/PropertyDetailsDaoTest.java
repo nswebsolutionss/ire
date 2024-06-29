@@ -7,6 +7,7 @@ import com.organizationplatform.protocol.domain.types.Address;
 import com.organizationplatform.protocol.domain.types.Price;
 import com.organizationplatform.protocol.domain.types.PropertyType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 
+@Tag("DaoTest")
 public class PropertyDetailsDaoTest {
 
     private String calculateUUID() {

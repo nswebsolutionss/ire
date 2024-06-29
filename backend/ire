@@ -8,7 +8,9 @@ parse_args()
     commit) commit
     ;;
     daoTest) daoTest
-      ;;
+    ;;
+    integrationTest) integrationTest
+    ;;
     g) echo "g" && gradle "${@:2}"
     ;;
     drs) drs
@@ -23,9 +25,10 @@ parse_args()
 main()
 {
   ROOT_DIR=$(pwd)
-  pushd $ROOT_DIR
-
-  export JAVA_HOME=opt/amazon-corretto-21.jdk/Contents/Home
+  cd $ROOT_DIR
+  ./bootstrap.sh
+  export JAVA_HOME=opt/jdk/Contents/Home
+  echo "Setting Java Home to $JAVA_HOME"
   parse_args $@
 }
 
