@@ -1,6 +1,8 @@
 package com.ire.organizationplatform.service.support;
 
-import com.ire.organizationplatform.service.OrganizationPlatformMain;
+import com.ire.organizationplatform.service.ServiceMain;
+import com.ire.webapp.VertxWebApp;
+import com.ire.webapp.WebAppConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
@@ -16,7 +18,6 @@ import java.util.function.Consumer;
 
 public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback
 {
-    private final OrganizationPlatformMain verticle = new OrganizationPlatformMain();
     private final Vertx vertx = Vertx.vertx();
     private final DslWrapper<WebUserDsl> webUserDslWrapper;
     private final List<String> ignoredResolvers = new ArrayList<>();
@@ -45,7 +46,8 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) {
-        vertx.deployVerticle(verticle, new DeploymentOptions().setWorkerPoolSize(1));
+        VertxWebApp vertxWebApp = ServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"));
+        vertx.deployVerticle(vertxWebApp, new DeploymentOptions().setWorkerPoolSize(1));
     }
 
     @Override

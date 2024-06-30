@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/databasewrapper/backend.database-wrapper.main.iml" filepath="$PROJECT_DIR$/.idea/modules/databasewrapper/backend.database-wrapper.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/release/backend.release.main.iml" filepath="$PROJECT_DIR$/.idea/modules/release/backend.release.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/webapp/backend.web-app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/webapp/backend.web-app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.test.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/request-protocol/organizationplatformprotocol.backend.request-protocol.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/organizationplatformprotocol/response-protocol/organizationplatformprotocol.backend.response-protocol.main.iml" />

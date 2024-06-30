@@ -7,9 +7,17 @@ install()
     then ./install-postgres.sh
     fi
 
-    if ! [ -d "$OPT_DIR/amazon-corretto-21.jdk" ]
+    if ! [ -d "$OPT_DIR/jdk" ]
         then ./install-jdk.sh
     fi
+
+    if ! [ -d "$OPT_DIR/node" ]
+            then ./install-node.sh
+    fi
+
+    if ! [ -d "$OPT_DIR/pnpm" ]
+                then ./install-pnpm.sh
+        fi
 
 }
 

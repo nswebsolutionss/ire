@@ -25,9 +25,11 @@ parse_args()
 main()
 {
   ROOT_DIR=$(pwd)
+  OPT_DIR=$ROOT_DIR/opt
   cd $ROOT_DIR
   ./bootstrap.sh
-  export JAVA_HOME=opt/jdk/Contents/Home
+  export JAVA_HOME=${OPT_DIR}/jdk/Contents/Home
+  export PATH=${OPT_DIR}/node/bin:${OPT_DIR}/pnpm:${OPT_DIR}/awscli/bin:${OPT_DIR}/granted:${PATH}
   echo "Setting Java Home to $JAVA_HOME"
   parse_args $@
 }
