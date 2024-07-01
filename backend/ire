@@ -11,6 +11,8 @@ parse_args()
     ;;
     integrationTest) integrationTest
     ;;
+    allTests) allTests
+      ;;
     g) echo "g" && gradle "${@:2}"
     ;;
     drs) drs

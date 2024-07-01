@@ -4,6 +4,8 @@ function usages() {
   echo "IRE entry point script"
   echo "ire commit (runs all commit build tests)"
   echo "ire daoTest (runs all dao tests)"
+  echo "ire integrationTest (runs all integration tests)"
+  echo "ire allTests (runs a drs followed by all tests)"
   echo "ire g (runs gradle wrapper with provided args)"
 }
 
@@ -35,4 +37,9 @@ package()
 gradle()
 {
   ./gradlew $@
+}
+
+allTests()
+{
+  drs && ./gradlew daoTest && ./gradlew integrationTest
 }
