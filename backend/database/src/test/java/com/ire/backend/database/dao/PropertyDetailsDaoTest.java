@@ -57,7 +57,7 @@ public class PropertyDetailsDaoTest {
 
         PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
 
-        String result = propertyDetailsDao.insert(propertyDetails);
+        String result = propertyDetailsDao.insertPropertyDetails(propertyDetails);
 
         Assertions.assertNotNull(result);
     }
@@ -90,12 +90,162 @@ public class PropertyDetailsDaoTest {
 
         PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
 
-        String result = propertyDetailsDao.insert(expected);
+        String result = propertyDetailsDao.insertPropertyDetails(expected);
         Assertions.assertNotNull(result);
 
-        PropertyDetails actual = propertyDetailsDao.get(result);
+        PropertyDetails actual = propertyDetailsDao.getPropertyDetails(result);
 
         deepAssert(expected, actual);
+    }
+
+    @Test
+    public void shouldGetAllPropertyDetailsForOrganizationId() {
+
+        String uuid = calculateUUID();
+
+        PropertyDetails expectedFirst = new PropertyDetails(
+                "12",
+                new Address(
+                        "12",
+                        "york house",
+                        "london",
+                        "greater london",
+                        "w148rl",
+                        "united kingdom"
+                ),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                PropertyType.Apartment,
+                12,
+                2,
+                new Price(12000.0, Currency.getInstance("GBP")),
+                List.of(),
+                uuid
+
+        );
+
+        PropertyDetails expectedSecond = new PropertyDetails(
+                "13",
+                new Address(
+                        "12",
+                        "york house",
+                        "london",
+                        "greater london",
+                        "w148rl",
+                        "united kingdom"
+                ),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                PropertyType.Apartment,
+                12,
+                2,
+                new Price(12000.0, Currency.getInstance("GBP")),
+                List.of(),
+                uuid
+
+        );
+
+        PropertyDetails notExpected = new PropertyDetails(
+                "13",
+                new Address(
+                        "12",
+                        "york house",
+                        "london",
+                        "greater london",
+                        "w148rl",
+                        "united kingdom"
+                ),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                PropertyType.Apartment,
+                12,
+                2,
+                new Price(12000.0, Currency.getInstance("GBP")),
+                List.of(),
+                calculateUUID()
+
+        );
+
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        String result = propertyDetailsDao.insertPropertyDetails(expectedFirst);
+        Assertions.assertNotNull(result);
+
+        String result2 = propertyDetailsDao.insertPropertyDetails(expectedSecond);
+        Assertions.assertNotNull(result2);
+
+        String result3 = propertyDetailsDao.insertPropertyDetails(notExpected);
+        Assertions.assertNotNull(result3);
+
+        List<PropertyDetails> actualList = propertyDetailsDao.getAllPropertiesDetailsForOrganizationId(uuid);
+
+        Assertions.assertEquals(2, actualList.size());
+        deepAssert(expectedFirst, actualList.get(0));
+        deepAssert(expectedSecond, actualList.get(1));
+    }
+
+    @Test
+    public void shouldGetAllPropertyDetails() {
+
+
+        String uuid = calculateUUID();
+
+        PropertyDetails expectedFirst = new PropertyDetails(
+                "12",
+                new Address(
+                        "12",
+                        "york house",
+                        "london",
+                        "greater london",
+                        "w148rl",
+                        "united kingdom"
+                ),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                PropertyType.Apartment,
+                12,
+                2,
+                new Price(12000.0, Currency.getInstance("GBP")),
+                List.of(),
+                uuid
+
+        );
+
+        PropertyDetails expectedSecond = new PropertyDetails(
+                "13",
+                new Address(
+                        "12",
+                        "york house",
+                        "london",
+                        "greater london",
+                        "w148rl",
+                        "united kingdom"
+                ),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                PropertyType.Apartment,
+                12,
+                2,
+                new Price(12000.0, Currency.getInstance("GBP")),
+                List.of(),
+                calculateUUID()
+
+        );
+
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+
+        propertyDetailsDao.deleteAll();
+
+        String result = propertyDetailsDao.insertPropertyDetails(expectedFirst);
+        Assertions.assertNotNull(result);
+
+        String result2 = propertyDetailsDao.insertPropertyDetails(expectedSecond);
+        Assertions.assertNotNull(result2);
+
+        List<PropertyDetails> actualList = propertyDetailsDao.getAllProperties();
+        System.out.println(actualList);
+        Assertions.assertEquals(2, actualList.size());
+        deepAssert(expectedFirst, actualList.get(0));
+        deepAssert(expectedSecond, actualList.get(1));
     }
 
     @Test
@@ -126,15 +276,15 @@ public class PropertyDetailsDaoTest {
 
         PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
 
-        String result = propertyDetailsDao.insert(expected);
-        PropertyDetails actual = propertyDetailsDao.get(result);
+        String result = propertyDetailsDao.insertPropertyDetails(expected);
+        PropertyDetails actual = propertyDetailsDao.getPropertyDetails(result);
 
         deepAssert(expected, actual);
 
-        String deletedId = propertyDetailsDao.delete(result);
+        String deletedId = propertyDetailsDao.deletePropertyDetails(result);
         Assertions.assertFalse(deletedId.isEmpty());
 
-        PropertyDetails actualDeleted = propertyDetailsDao.get(result);
+        PropertyDetails actualDeleted = propertyDetailsDao.getPropertyDetails(result);
 
         Assertions.assertNull(actualDeleted);
     }
@@ -167,10 +317,10 @@ public class PropertyDetailsDaoTest {
 
         PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
 
-        String result = propertyDetailsDao.insert(expected);
+        String result = propertyDetailsDao.insertPropertyDetails(expected);
         Assertions.assertNotNull(result);
 
-        PropertyDetails actual = propertyDetailsDao.get(result);
+        PropertyDetails actual = propertyDetailsDao.getPropertyDetails(result);
 
         deepAssert(expected, actual);
 
@@ -196,10 +346,10 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        String updatedId = propertyDetailsDao.update(expectedUpdate);
+        String updatedId = propertyDetailsDao.updatePropertyDetails(expectedUpdate);
         Assertions.assertFalse(updatedId.isEmpty());
 
-        PropertyDetails actualUpdated = propertyDetailsDao.get(result);
+        PropertyDetails actualUpdated = propertyDetailsDao.getPropertyDetails(result);
 
         deepAssert(expectedUpdate, actualUpdated);
 

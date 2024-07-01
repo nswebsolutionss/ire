@@ -1,7 +1,7 @@
 package com.ire.backend.database;
 
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
-import com.ire.backend.database.dao.RestDao;
+import com.ire.backend.database.dao.PropertyDetailsDao;
 import com.organizationplatform.protocol.domain.types.Address;
 import com.organizationplatform.protocol.domain.types.Price;
 import com.organizationplatform.protocol.domain.types.PropertyType;
@@ -12,45 +12,46 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
 import static com.ire.backend.database.DataSourceFactory.closeConnection;
 import static java.sql.Types.OTHER;
 
-public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
+public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final String[] idColumn = new String[]{"id"};
 
     @Override
-    public String insert(final PropertyDetails propertyDetails) {
+    public String insertPropertyDetails(final PropertyDetails propertyDetails) {
 
         String sql = """
-           WITH details_insert as (
-            INSERT into property_details (
-             date_added,
-             last_updated,
-             property_type,
-             beds,
-             bathrooms,
-             price,
-             currency,
-             organization_information_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            RETURNING id
-           )
-           INSERT into property_address(
-            building_identifier,
-            street_name,
-            city,
-            county,
-            postcode,
-            country,
-            property_details_id,
-            organization_information_id)
-            VALUES(?, ?, ?, ?, ?, ?, (select id from details_insert), ?);
-        """;
+                   WITH details_insert as (
+                    INSERT into property_details (
+                     date_added,
+                     last_updated,
+                     property_type,
+                     beds,
+                     bathrooms,
+                     price,
+                     currency,
+                     organization_information_id)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    RETURNING id
+                   )
+                   INSERT into property_address(
+                    building_identifier,
+                    street_name,
+                    city,
+                    county,
+                    postcode,
+                    country,
+                    property_details_id,
+                    organization_information_id)
+                    VALUES(?, ?, ?, ?, ?, ?, (select id from details_insert), ?);
+                """;
 
         // TODO: FIX PROPERTY DETAILS ID TO BE LONG AND NOT STRING
         Connection connection = DataSourceFactory.ownerDataSource();
@@ -60,8 +61,8 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
             ps.setLong(1, propertyDetails.getDateAdded());
             ps.setLong(2, propertyDetails.getLastUpdated());
             ps.setString(3, propertyDetails.getPropertyType().representation());
-            ps.setInt(4, (int)propertyDetails.getBeds());
-            ps.setInt(5, (int)propertyDetails.getBathrooms());
+            ps.setInt(4, (int) propertyDetails.getBeds());
+            ps.setInt(5, (int) propertyDetails.getBathrooms());
             ps.setString(6, String.valueOf(propertyDetails.getPrice().value()));
             ps.setString(7, propertyDetails.getPrice().currency().getCurrencyCode());
             ps.setObject(8, propertyDetails.getOrganizationInformationId(), OTHER);
@@ -79,7 +80,6 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
                 String key = generatedKeys.getString(1);
-                System.out.println(key);
                 return key;
             } else {
                 LOGGER.warn("Unable to INSERT propertyDetails: " + propertyDetails);
@@ -94,30 +94,30 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
     }
 
     @Override
-    public PropertyDetails get(final String uuid) {
+    public PropertyDetails getPropertyDetails(final String uuid) {
 
         final String sql = """
-        SELECT
-            property_details.id,
-            property_details.date_added,
-            property_details.last_updated,
-            property_details.property_type,
-            property_details.beds,
-            property_details.bathrooms,
-            property_details.price,
-            property_details.currency,
-            property_details.organization_information_id,
-            property_address.building_identifier,
-            property_address.street_name,
-            property_address.city,
-            property_address.county,
-            property_address.postcode,
-            property_address.country
-        FROM
-            property_details
-            INNER JOIN property_address ON property_address.property_details_id = property_details.id
-        WHERE property_details.id = ?
-        """;
+                SELECT
+                    property_details.id,
+                    property_details.date_added,
+                    property_details.last_updated,
+                    property_details.property_type,
+                    property_details.beds,
+                    property_details.bathrooms,
+                    property_details.price,
+                    property_details.currency,
+                    property_details.organization_information_id,
+                    property_address.building_identifier,
+                    property_address.street_name,
+                    property_address.city,
+                    property_address.county,
+                    property_address.postcode,
+                    property_address.country
+                FROM
+                    property_details
+                    INNER JOIN property_address ON property_address.property_details_id = property_details.id
+                WHERE property_details.id = ?
+                """;
 
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
@@ -158,7 +158,137 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
     }
 
     @Override
-    public String delete(final String uuid) {
+    public List<PropertyDetails> getAllPropertiesDetailsForOrganizationId(String organizationId) {
+        final String sql = """
+                SELECT
+                    property_details.id,
+                    property_details.date_added,
+                    property_details.last_updated,
+                    property_details.property_type,
+                    property_details.beds,
+                    property_details.bathrooms,
+                    property_details.price,
+                    property_details.currency,
+                    property_details.organization_information_id,
+                    property_address.building_identifier,
+                    property_address.street_name,
+                    property_address.city,
+                    property_address.county,
+                    property_address.postcode,
+                    property_address.country
+                FROM
+                    property_details
+                    INNER JOIN property_address ON property_address.property_details_id = property_details.id
+                WHERE property_details.organization_information_id = ?
+                """;
+
+        Connection connection = DataSourceFactory.ownerDataSource();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setObject(1, organizationId, OTHER);
+            ResultSet rs = ps.executeQuery();
+            List<PropertyDetails> organizationInformationList = new ArrayList<>();
+            while (rs.next()) {
+                final Address address = new Address(
+                        rs.getString("building_identifier"),
+                        rs.getString("street_name"),
+                        rs.getString("city"),
+                        rs.getString("county"),
+                        rs.getString("postcode"),
+                        rs.getString("country")
+                );
+                organizationInformationList.add(
+                        new PropertyDetails(
+                                rs.getString("id"),
+                                address,
+                                rs.getLong("date_added"),
+                                rs.getLong("last_updated"),
+                                PropertyType.valueOf(rs.getString("property_type")),
+                                rs.getDouble("beds"),
+                                rs.getDouble("bathrooms"),
+                                new Price(rs.getDouble("price"), Currency.getInstance(rs.getString("currency"))),
+                                List.of(),
+                                rs.getString("organization_information_id")
+                        )
+                );
+            }
+            rs.close();
+            ps.close();
+            return organizationInformationList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(connection);
+        }
+
+    }
+
+    @Override
+    public List<PropertyDetails> getAllProperties() {
+        final String sql = """
+                SELECT
+                    property_details.id,
+                    property_details.date_added,
+                    property_details.last_updated,
+                    property_details.property_type,
+                    property_details.beds,
+                    property_details.bathrooms,
+                    property_details.price,
+                    property_details.currency,
+                    property_details.organization_information_id,
+                    property_address.building_identifier,
+                    property_address.street_name,
+                    property_address.city,
+                    property_address.county,
+                    property_address.postcode,
+                    property_address.country
+                FROM
+                    property_details
+                    INNER JOIN property_address ON property_address.property_details_id = property_details.id
+                """;
+
+        Connection connection = DataSourceFactory.ownerDataSource();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            List<PropertyDetails> organizationInformationList = new ArrayList<>();
+            while (rs.next()) {
+                final Address address = new Address(
+                        rs.getString("building_identifier"),
+                        rs.getString("street_name"),
+                        rs.getString("city"),
+                        rs.getString("county"),
+                        rs.getString("postcode"),
+                        rs.getString("country")
+                );
+                organizationInformationList.add(
+                        new PropertyDetails(
+                                rs.getString("id"),
+                                address,
+                                rs.getLong("date_added"),
+                                rs.getLong("last_updated"),
+                                PropertyType.valueOf(rs.getString("property_type")),
+                                rs.getDouble("beds"),
+                                rs.getDouble("bathrooms"),
+                                new Price(rs.getDouble("price"), Currency.getInstance(rs.getString("currency"))),
+                                List.of(),
+                                rs.getString("organization_information_id")
+                        )
+                );
+            }
+            rs.close();
+            ps.close();
+            return organizationInformationList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(connection);
+        }
+
+    }
+
+    @Override
+    public String deletePropertyDetails(final String uuid) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM property_details WHERE id = ?", idColumn);
@@ -180,31 +310,50 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
         }
     }
 
+    /**
+     * ONLY TEMPORARY FOR USE IN TESTS
+     * @return
+     */
+    public void deleteAll() {
+        Connection connection = DataSourceFactory.ownerDataSource();
+        try {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM property_details");
+            ps.execute();
+            ResultSet rs = ps.getGeneratedKeys();
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(connection);
+        }
+    }
+
     @Override
-    public String update(final PropertyDetails propertyDetails) {
+    public String updatePropertyDetails(final PropertyDetails propertyDetails) {
 
         String sql = """
-           WITH property_insert as (
-               UPDATE property_details set
-                date_added = ?,
-                last_updated = ?,
-                property_type = ?,
-                beds = ?,
-                bathrooms = ?,
-                price = ?,
-                currency = ?
-                WHERE id = ?
-                RETURNING id 
-            )
-            UPDATE property_address set
-             building_identifier = ?,
-             street_name = ?,
-             city = ?,
-             county = ?,
-             postcode = ?,
-             country = ?
-             WHERE id = (select id from property_insert);
-        """;
+                   WITH property_insert as (
+                       UPDATE property_details set
+                        date_added = ?,
+                        last_updated = ?,
+                        property_type = ?,
+                        beds = ?,
+                        bathrooms = ?,
+                        price = ?,
+                        currency = ?
+                        WHERE id = ?
+                        RETURNING id 
+                    )
+                    UPDATE property_address set
+                     building_identifier = ?,
+                     street_name = ?,
+                     city = ?,
+                     county = ?,
+                     postcode = ?,
+                     country = ?
+                     WHERE id = (select id from property_insert);
+                """;
 
 
         Connection connection = DataSourceFactory.ownerDataSource();
@@ -216,8 +365,8 @@ public class PropertyDetailsDaoImpl implements RestDao<PropertyDetails> {
             ps.setLong(1, propertyDetails.getDateAdded());
             ps.setLong(2, propertyDetails.getLastUpdated());
             ps.setString(3, propertyDetails.getPropertyType().representation());
-            ps.setInt(4, (int)propertyDetails.getBeds());
-            ps.setInt(5, (int)propertyDetails.getBathrooms());
+            ps.setInt(4, (int) propertyDetails.getBeds());
+            ps.setInt(5, (int) propertyDetails.getBathrooms());
             ps.setString(6, String.valueOf(propertyDetails.getPrice().value()));
             ps.setString(7, propertyDetails.getPrice().currency().getCurrencyCode());
 

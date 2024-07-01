@@ -43,7 +43,7 @@ public class OrganizationInformationDaoTest {
         );
         OrganizationInformationDaoImpl organizationInformationDao = new OrganizationInformationDaoImpl();
 
-        String result = organizationInformationDao.insert(organizationInformation);
+        String result = organizationInformationDao.insertOrganizationInformation(organizationInformation);
 
         Assertions.assertEquals(uuid, result);
     }
@@ -65,11 +65,11 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 System.currentTimeMillis()
         );
-        RestDao<OrganizationInformation> organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
-        String result = organizationInformationDao.insert(expectedOrgInfo);
+        String result = organizationInformationDao.insertOrganizationInformation(expectedOrgInfo);
 
-        OrganizationInformation actualOrgInfo = organizationInformationDao.get(result);
+        OrganizationInformation actualOrgInfo = organizationInformationDao.getOrganizationInformation(result);
 
         assertOrganizationInformation(actualOrgInfo, expectedOrgInfo);
     }
@@ -91,18 +91,18 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 System.currentTimeMillis()
         );
-        RestDao<OrganizationInformation> organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
-        String result = organizationInformationDao.insert(expectedOrgInfo);
+        String result = organizationInformationDao.insertOrganizationInformation(expectedOrgInfo);
 
-        OrganizationInformation actualOrgInfo = organizationInformationDao.get(result);
+        OrganizationInformation actualOrgInfo = organizationInformationDao.getOrganizationInformation(result);
         assertOrganizationInformation(actualOrgInfo, expectedOrgInfo);
 
-        String deletedUuid = organizationInformationDao.delete(result);
+        String deletedUuid = organizationInformationDao.deleteOrganizationInformation(result);
 
         Assertions.assertEquals(result, deletedUuid);
 
-        OrganizationInformation deletedOrgInfo = organizationInformationDao.get(result);
+        OrganizationInformation deletedOrgInfo = organizationInformationDao.getOrganizationInformation(result);
 
         Assertions.assertNull(deletedOrgInfo);
     }
@@ -124,11 +124,11 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 System.currentTimeMillis()
         );
-        RestDao<OrganizationInformation> organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
-        String result = organizationInformationDao.insert(originalOrgInfo);
+        String result = organizationInformationDao.insertOrganizationInformation(originalOrgInfo);
 
-        OrganizationInformation actualOrgInfo = organizationInformationDao.get(result);
+        OrganizationInformation actualOrgInfo = organizationInformationDao.getOrganizationInformation(result);
         assertOrganizationInformation(actualOrgInfo, originalOrgInfo);
 
         OrganizationInformation updatedOrgInfoExpected = new OrganizationInformation(
@@ -144,10 +144,10 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis()
         );
 
-        String updateUuid = organizationInformationDao.update(updatedOrgInfoExpected);
+        String updateUuid = organizationInformationDao.updateOrganizationInformation(updatedOrgInfoExpected);
         Assertions.assertEquals(result, updateUuid);
 
-        OrganizationInformation updatedOrgInfoActual = organizationInformationDao.get(result);
+        OrganizationInformation updatedOrgInfoActual = organizationInformationDao.getOrganizationInformation(result);
 
         assertOrganizationInformation(updatedOrgInfoActual, updatedOrgInfoExpected);
     }

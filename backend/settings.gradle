@@ -13,10 +13,11 @@ def includeProject(String name, String path) {
 }
 
 includeProject(':database', 'database')
-includeProject(':organization-platform', 'organizationplatform')
+includeProject(':organization-platform', 'accountservice/organizationplatform')
 includeProject(':database-wrapper', 'databasewrapper')
 includeProject(':web-app', 'webapp')
 includeProject(':release', 'release')
-includeProject(':domain-protocol', 'organizationplatformprotocol/domain-protocol')
-includeProject(':request-protocol', 'organizationplatformprotocol/request-protocol')
-includeProject(':response-protocol', 'organizationplatformprotocol/response-protocol')
+includeProject(':agent-property-portal-gateway', 'agent-property-portal-gateway')
+includeProject(':domain-protocol', 'accountservice/organizationplatformprotocol/domain-protocol')
+includeProject(':request-protocol', 'accountservice/organizationplatformprotocol/request-protocol')
+includeProject(':response-protocol', 'accountservice/organizationplatformprotocol/response-protocol')

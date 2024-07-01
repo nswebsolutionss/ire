@@ -23,13 +23,14 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/accountservice/organizationplatform" />
+            <option value="$PROJECT_DIR$/accountservice/organizationplatformprotocol/domain-protocol" />
+            <option value="$PROJECT_DIR$/accountservice/organizationplatformprotocol/request-protocol" />
+            <option value="$PROJECT_DIR$/accountservice/organizationplatformprotocol/response-protocol" />
+            <option value="$PROJECT_DIR$/agent-property-portal-gateway" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/database" />
             <option value="$PROJECT_DIR$/databasewrapper" />
-            <option value="$PROJECT_DIR$/organizationplatform" />
-            <option value="$PROJECT_DIR$/organizationplatformprotocol/domain-protocol" />
-            <option value="$PROJECT_DIR$/organizationplatformprotocol/request-protocol" />
-            <option value="$PROJECT_DIR$/organizationplatformprotocol/response-protocol" />
             <option value="$PROJECT_DIR$/release" />
             <option value="$PROJECT_DIR$/webapp" />
           </set>

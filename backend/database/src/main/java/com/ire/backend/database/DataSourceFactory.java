@@ -10,6 +10,8 @@ import org.postgresql.ds.PGSimpleDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static com.ire.backend.database.utils.CurrentAgentSession.setCurrentAgent;
+
 public class DataSourceFactory {
 
     public static Connection ownerDataSource()
@@ -26,6 +28,22 @@ public class DataSourceFactory {
         }
     }
 
+//    public static Connection ownerDataSource(final String organizationInformationId)
+//    {
+//        final PGSimpleDataSource dataSource = new PGSimpleDataSource();
+//        String [] serverName = {"localhost"};
+//        dataSource.setServerNames(serverName);
+//        dataSource.setDatabaseName("ire");
+//        dataSource.setUser("superuser");
+//        try {
+//            Connection connection = dataSource.getConnection();
+//            setCurrentAgent(organizationInformationId, connection);
+//            return connection;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     public static void closeConnection(final Connection connection) {
         try{
             connection.close();
@@ -34,20 +52,4 @@ public class DataSourceFactory {
         }
     }
 
-    public static SqlClient vertxSqlClient() {
-        PgConnectOptions connectOptions = new PgConnectOptions()
-                .setPort(5432)
-                .setHost("localhost")
-                .setDatabase("ire")
-                .setUser("superuser");
-
-        PoolOptions poolOptions = new PoolOptions()
-                .setMaxSize(5);
-
-        return PgBuilder
-                .client()
-                .with(poolOptions)
-                .connectingTo(connectOptions)
-                .build();
-    }
 }

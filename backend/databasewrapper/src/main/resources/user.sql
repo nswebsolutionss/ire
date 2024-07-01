@@ -31,7 +31,7 @@ property_details (
 );
 
 create table if not exists
-  property_address (
+    property_address (
     id bigint generated always as identity,
     property_details_id bigint references property_details(id) on delete cascade,
     building_identifier text null,
@@ -43,6 +43,5 @@ create table if not exists
     organization_information_id uuid,
     constraint property_address_pkey primary key (id)
   );
-
 
 

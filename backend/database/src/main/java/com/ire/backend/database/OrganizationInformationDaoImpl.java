@@ -1,7 +1,7 @@
 package com.ire.backend.database;
 
 import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
-import com.ire.backend.database.dao.RestDao;
+import com.ire.backend.database.dao.OrganizationInformationDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,13 +13,13 @@ import java.sql.SQLException;
 import static com.ire.backend.database.DataSourceFactory.closeConnection;
 import static java.sql.Types.OTHER;
 
-public class OrganizationInformationDaoImpl implements RestDao<OrganizationInformation> {
+public class OrganizationInformationDaoImpl implements OrganizationInformationDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final String[] idColumn = new String[]{"id"};
 
     @Override
-    public String insert(OrganizationInformation organizationInformation) {
+    public String insertOrganizationInformation(OrganizationInformation organizationInformation) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT into organization_information (" +
@@ -65,7 +65,7 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
     }
 
     @Override
-    public OrganizationInformation get(final String uuid) {
+    public OrganizationInformation getOrganizationInformation(final String organizationId) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             String sql = "SELECT id, " +
@@ -80,7 +80,7 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
                     "    last_updated FROM organization_information WHERE id = ?";
 
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setObject(1, uuid, OTHER);
+            ps.setObject(1, organizationId, OTHER);
             ResultSet rs = ps.executeQuery();
             OrganizationInformation organizationInformation = null;
             if (rs.next()) {
@@ -110,7 +110,7 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
     }
 
     @Override
-    public String delete(final String uuid) {
+    public String deleteOrganizationInformation(final String uuid) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM organization_information WHERE id = ?", idColumn);
@@ -134,7 +134,7 @@ public class OrganizationInformationDaoImpl implements RestDao<OrganizationInfor
     }
 
     @Override
-    public String update(final OrganizationInformation organizationInformation) {
+    public String updateOrganizationInformation(final OrganizationInformation organizationInformation) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             String sql = "UPDATE organization_information set " +
