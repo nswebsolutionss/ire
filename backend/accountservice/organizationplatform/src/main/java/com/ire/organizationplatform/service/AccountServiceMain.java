@@ -1,11 +1,15 @@
 package com.ire.organizationplatform.service;
 
+import com.generated.organizationplatform.protocol.domain.Organization;
 import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
 import com.generated.organizationplatform.protocol.request.Request;
 import com.ire.organizationplatform.service.contract.AccountServiceInteraction;
 import com.ire.organizationplatform.service.handlers.JsonDecodingHandler;
 import com.ire.organizationplatform.service.handlers.UrlParamsDecodingHandler;
+import com.ire.organizationplatform.service.handlers.organization.CreateOrganizationHandler;
+import com.ire.organizationplatform.service.handlers.organization.DeleteOrganizationHandler;
+import com.ire.organizationplatform.service.handlers.organization.GetOrganizationHandler;
 import com.ire.organizationplatform.service.handlers.organizationinformation.CreateOrganizationInformationHandler;
 import com.ire.organizationplatform.service.handlers.organizationinformation.DeleteOrganizationInformationHandler;
 import com.ire.organizationplatform.service.handlers.organizationinformation.GetOrganizationInformationHandler;
@@ -47,6 +51,19 @@ public class AccountServiceMain {
                             .allowedHeader("Access-Control-Allow-Origin")
                             .allowedHeader("Access-Control-Allow-Method")
                     );
+
+                    // Organization routes
+                    router.post("/api/organization").handler(
+                            new JsonDecodingHandler<>(Organization.class, new CreateOrganizationHandler(serviceInteraction))
+                    );
+                    router.get("/api/organization/:id").handler(
+                            new UrlParamsDecodingHandler<>(Request.class, new GetOrganizationHandler(serviceInteraction))
+                    );
+                    router.delete("/api/organization/:id").handler(
+                            new UrlParamsDecodingHandler<>(Request.class, new DeleteOrganizationHandler(serviceInteraction))
+                    );
+
+                    // Organization Information routes
                     router.post("/api/organizationInformation").handler(
                             new JsonDecodingHandler<>(OrganizationInformation.class, new CreateOrganizationInformationHandler(serviceInteraction))
                     );
@@ -60,6 +77,7 @@ public class AccountServiceMain {
                             new UrlParamsDecodingHandler<>(Request.class, new DeleteOrganizationInformationHandler(serviceInteraction))
                     );
 
+                    // Property routes
                     router.post("/api/properties").handler(
                             new JsonDecodingHandler<>(PropertyDetails.class, new CreatePropertyDetailsHandler(serviceInteraction))
                     );
@@ -75,7 +93,6 @@ public class AccountServiceMain {
                     router.get("/api/properties").handler(
                             new GetAllPropertyDetails(serviceInteraction)
                     );
-
                     router.delete("/api/properties/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new DeletePropertyDetailsHandler(serviceInteraction))
                     );

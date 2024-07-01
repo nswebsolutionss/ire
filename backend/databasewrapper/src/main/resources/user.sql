@@ -2,8 +2,14 @@ CREATE USER db_user WITH PASSWORD 'P4ssword.';
 GRANT ALL PRIVILEGES ON DATABASE ire TO db_user;
 
 create table if not exists
+    organization (
+        id text not null,
+        constraint organization_pkey primary key (id)
+    );
+
+create table if not exists
   organization_information (
-    id uuid not null,
+    id text not null,
     company_name text null,
     company_description text null,
     telephone_number text null,
@@ -26,7 +32,7 @@ property_details (
   bathrooms int null,
   price text null,
   currency text null,
-  organization_information_id uuid,
+  organization_information_id text,
   constraint property_details_pkey primary key (id)
 );
 
@@ -40,7 +46,7 @@ create table if not exists
     county text null,
     postcode text null,
     country text null,
-    organization_information_id uuid,
+    organization_information_id text,
     constraint property_address_pkey primary key (id)
   );
 

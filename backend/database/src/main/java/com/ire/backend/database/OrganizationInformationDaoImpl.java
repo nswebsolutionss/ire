@@ -102,6 +102,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
             ps.close();
             return organizationInformation;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -126,6 +127,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
             rs.close();
             return generatedKey;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -173,6 +175,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
             rs.close();
             return generatedKey;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);

@@ -1,0 +1,13 @@
+{
+  "title": "Organization",
+  "type": "object",
+  "javaInterfaces": [],
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "string",
+      "existingJavaType": "String",
+      "description": "Identifier of the organization"
+    }
+  }
+}

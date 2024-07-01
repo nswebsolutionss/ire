@@ -106,7 +106,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
         Awaitility.await(Thread.currentThread().getName())
                 .timeout(10, TimeUnit.SECONDS)
-                .pollInterval(1, TimeUnit.SECONDS)
+                .pollInterval(1, TimeUnit.MILLISECONDS)
                 .untilAsserted(
                         () -> {
 
@@ -142,18 +142,14 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         expected.keys().forEachRemaining(key -> {
             if (ignoredResolvers.contains(key)) {
                 Assertions.assertTrue(actual.has(key));
-                idsSeen.add((String)actual.get(key));
+                idsSeen.add((String) actual.get(key));
                 return;
             }
-            if(actual.get(key) instanceof JSONObject)
-            {
+            if (actual.get(key) instanceof JSONObject) {
                 assertResponseBody((JSONObject) expected.get(key), (JSONObject) actual.get(key));
-            }
-            else if(actual.get(key) instanceof JSONArray)
-            {
+            } else if (actual.get(key) instanceof JSONArray) {
                 Assertions.assertTrue(((JSONArray) actual.get(key)).isEmpty());
-            }
-            else {
+            } else {
                 Assertions.assertEquals(expected.get(key), actual.get(key));
             }
         });

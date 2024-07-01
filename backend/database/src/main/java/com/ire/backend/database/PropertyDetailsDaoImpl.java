@@ -151,6 +151,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             ps.close();
             return organizationInformation;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -216,6 +217,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             ps.close();
             return organizationInformationList;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -280,6 +282,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             ps.close();
             return organizationInformationList;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -304,6 +307,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             rs.close();
             return generatedKey;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);
@@ -312,6 +316,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
 
     /**
      * ONLY TEMPORARY FOR USE IN TESTS
+     *
      * @return
      */
     public void deleteAll() {
@@ -390,6 +395,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             rs.close();
             return generatedKey;
         } catch (SQLException e) {
+            LOGGER.error("Received SqlException when attempting to write to database: ", e);
             throw new RuntimeException(e);
         } finally {
             closeConnection(connection);

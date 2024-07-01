@@ -1,5 +1,6 @@
 package com.ire.organizationplatform.service.contract;
 
+import com.generated.organizationplatform.protocol.domain.Organization;
 import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
 
@@ -7,9 +8,15 @@ import java.util.List;
 
 public interface AccountServiceInteraction {
 
+    String createOrganization(final Organization organization);
+
+    String deleteOrganization(final String uuid);
+
+    Organization getOrganization(final String uuid);
+
     String createOrganizationInformation(final OrganizationInformation organizationInformation);
 
-    String updateOrganizationInformation(final OrganizationInformation organizationInformation );
+    String updateOrganizationInformation(final OrganizationInformation organizationInformation);
 
     String deleteOrganizationInformation(final String uuid);
 

@@ -1,9 +1,12 @@
 package com.ire.organizationplatform.service.interaction;
 
+import com.generated.organizationplatform.protocol.domain.Organization;
 import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
+import com.ire.backend.database.OrganizationDaoImpl;
 import com.ire.backend.database.OrganizationInformationDaoImpl;
 import com.ire.backend.database.PropertyDetailsDaoImpl;
+import com.ire.backend.database.dao.OrganizationDao;
 import com.ire.backend.database.dao.OrganizationInformationDao;
 import com.ire.backend.database.dao.PropertyDetailsDao;
 import com.ire.organizationplatform.service.contract.AccountServiceInteraction;
@@ -12,11 +15,13 @@ import java.util.List;
 
 public class AccountInformationInteractionImpl implements AccountServiceInteraction {
 
+    private final OrganizationDao organizationDao;
     private final OrganizationInformationDao organizationInformationDao;
     private final PropertyDetailsDao propertyDetailsDao;
 
     public AccountInformationInteractionImpl() {
 
+        this.organizationDao = new OrganizationDaoImpl();
         this.organizationInformationDao = new OrganizationInformationDaoImpl();
         this.propertyDetailsDao = new PropertyDetailsDaoImpl();
     }
@@ -26,11 +31,30 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
      */
 
     @Override
-    public String createOrganizationInformation(final OrganizationInformation organizationInformation) {
-        if(organizationInformationDao.getOrganizationInformation(organizationInformation.getId()) == null) {
-            return organizationInformationDao.insertOrganizationInformation(organizationInformation);
+    public String createOrganization(final Organization organizationInformation) {
+        if (organizationDao.getOrganization(organizationInformation.getId()) == null) {
+            return organizationDao.insertOrganization(organizationInformation);
+        } else {
+            return "";
         }
-        else {
+    }
+
+    @Override
+    public String deleteOrganization(final String uuid) {
+
+        return organizationDao.deleteOrganization(uuid);
+    }
+
+    @Override
+    public Organization getOrganization(String uuid) {
+        return organizationDao.getOrganization(uuid);
+    }
+
+    @Override
+    public String createOrganizationInformation(final OrganizationInformation organizationInformation) {
+        if (organizationInformationDao.getOrganizationInformation(organizationInformation.getId()) == null) {
+            return organizationInformationDao.insertOrganizationInformation(organizationInformation);
+        } else {
             return "";
         }
     }
@@ -54,10 +78,9 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
 
     @Override
     public String createPropertyDetails(final PropertyDetails organizationInformation) {
-        if(propertyDetailsDao.getPropertyDetails(organizationInformation.getId()) == null) {
+        if (propertyDetailsDao.getPropertyDetails(organizationInformation.getId()) == null) {
             return propertyDetailsDao.insertPropertyDetails(organizationInformation);
-        }
-        else {
+        } else {
             return "";
         }
     }
