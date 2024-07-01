@@ -71,11 +71,8 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
 
     @Override
     public String createPropertyDetails(final PropertyDetails organizationInformation) {
-        if (propertyDetailsDao.getPropertyDetails(organizationInformation.getId()) == null) {
-            return propertyDetailsDao.insertPropertyDetails(organizationInformation);
-        } else {
-            return "";
-        }
+        return propertyDetailsDao.insertPropertyDetails(organizationInformation);
+
     }
 
     @Override
