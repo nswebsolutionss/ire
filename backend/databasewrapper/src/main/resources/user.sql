@@ -19,6 +19,7 @@ create table if not exists
     youtube_url text null,
     member_since bigint,
     last_updated bigint,
+    organization_id text,
     constraint organization_information_pkey primary key (id)
   );
 

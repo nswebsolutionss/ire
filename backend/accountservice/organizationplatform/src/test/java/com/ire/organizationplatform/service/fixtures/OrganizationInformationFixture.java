@@ -13,6 +13,7 @@ import java.util.UUID;
 import static com.ire.organizationplatform.service.support.RestApi.idsSeen;
 
 public class OrganizationInformationFixture {
+    private final String id = UUID.randomUUID().toString();
     private final long memberSince = System.currentTimeMillis();
     private final long lastUpdated = System.currentTimeMillis();
     private long lastUpdatedUpdate;
@@ -28,7 +29,8 @@ public class OrganizationInformationFixture {
                 "instagramUrl",
                 "youtubeUrl",
                 memberSince,
-                lastUpdated
+                lastUpdated,
+                id
 
         );
         return new OrganizationInformationRequestMessage()
@@ -55,7 +57,8 @@ public class OrganizationInformationFixture {
                 "instagramUrl",
                 "youtubeUrl",
                 memberSince,
-                lastUpdated
+                lastUpdated,
+                id
 
         );
         return new SuccessResponseMessage()
@@ -90,7 +93,8 @@ public class OrganizationInformationFixture {
                 "newInstagramUrl",
                 "newYoutubeUrl",
                 memberSince,
-                lastUpdatedUpdate
+                lastUpdatedUpdate,
+                id
         );
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
@@ -110,7 +114,8 @@ public class OrganizationInformationFixture {
                 "newInstagramUrl",
                 "newYoutubeUrl",
                 memberSince,
-                lastUpdatedUpdate
+                lastUpdatedUpdate,
+                id
         );
         return new SuccessResponseMessage()
                 .statusCode(200)

@@ -30,21 +30,8 @@ public class GetOrganizationInformationHandler implements ProcessingHandler<Requ
                     if (res.succeeded()) {
                         if (res.result() == null) {
                             ResponseHelper.resourceNotFound(routingContext, new Response(request.getId(), "Unable to get Organization Information"));
-                        }
-                        else {
-                            ResponseHelper.ok(routingContext, new OrganizationInformation(
-                                    res.result().getId(),
-                                    res.result().getCompanyName(),
-                                    res.result().getCompanyDescription(),
-                                    res.result().getTelephoneNumber(),
-                                    res.result().getWebsiteUrl(),
-                                    res.result().getFacebookUrl(),
-                                    res.result().getInstagramUrl(),
-                                    res.result().getYoutubeUrl(),
-                                    res.result().getMemberSince(),
-                                    res.result().getLastUpdated()
-
-                            ));
+                        } else {
+                            ResponseHelper.ok(routingContext, res.result());
                         }
                     } else {
                         LOGGER.error("Unable to write to database: ", res.cause());

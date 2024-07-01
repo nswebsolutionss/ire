@@ -37,6 +37,10 @@
     "lastUpdated": {
       "type": "number",
       "existingJavaType": "Long"
+    },
+    "organizationId": {
+      "type": "string",
+      "description": "Identifier of the organization"
     }
   }
 }

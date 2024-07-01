@@ -30,7 +30,7 @@ public class OrganizationInformationDaoTest {
         String uuid = calculateUUID();
 
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                uuid,
+                "",
                 "a company",
                 "a description",
                 "a telephone number",
@@ -39,7 +39,8 @@ public class OrganizationInformationDaoTest {
                 "a instagram url",
                 "a youtube url",
                 System.currentTimeMillis(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                uuid
         );
         OrganizationInformationDaoImpl organizationInformationDao = new OrganizationInformationDaoImpl();
 
@@ -54,7 +55,7 @@ public class OrganizationInformationDaoTest {
         String uuid = calculateUUID();
 
         OrganizationInformation expectedOrgInfo = new OrganizationInformation(
-                uuid,
+                "",
                 "a company",
                 "a description",
                 "a telephone number",
@@ -63,7 +64,8 @@ public class OrganizationInformationDaoTest {
                 "a instagram url",
                 "a youtube url",
                 System.currentTimeMillis(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                uuid
         );
         OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
@@ -80,7 +82,7 @@ public class OrganizationInformationDaoTest {
         String uuid = calculateUUID();
 
         OrganizationInformation expectedOrgInfo = new OrganizationInformation(
-                uuid,
+                "",
                 "a company",
                 "a description",
                 "a telephone number",
@@ -89,7 +91,8 @@ public class OrganizationInformationDaoTest {
                 "a instagram url",
                 "a youtube url",
                 System.currentTimeMillis(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                uuid
         );
         OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
@@ -113,7 +116,7 @@ public class OrganizationInformationDaoTest {
         String uuid = calculateUUID();
 
         OrganizationInformation originalOrgInfo = new OrganizationInformation(
-                uuid,
+                "",
                 "a company",
                 "a description",
                 "a telephone number",
@@ -122,7 +125,8 @@ public class OrganizationInformationDaoTest {
                 "a instagram url",
                 "a youtube url",
                 System.currentTimeMillis(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                uuid
         );
         OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
 
@@ -141,7 +145,8 @@ public class OrganizationInformationDaoTest {
                 "a instagram url",
                 "a youtube url",
                 System.currentTimeMillis(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                uuid
         );
 
         String updateUuid = organizationInformationDao.updateOrganizationInformation(updatedOrgInfoExpected);
@@ -164,5 +169,6 @@ public class OrganizationInformationDaoTest {
         Assertions.assertEquals(expectedOrgInfo.getYoutubeUrl(), actualOrgInfo.getYoutubeUrl());
         Assertions.assertEquals(expectedOrgInfo.getMemberSince(), actualOrgInfo.getMemberSince());
         Assertions.assertEquals(expectedOrgInfo.getLastUpdated(), actualOrgInfo.getLastUpdated());
+        Assertions.assertEquals(expectedOrgInfo.getOrganizationId(), actualOrgInfo.getOrganizationId());
     }
 }

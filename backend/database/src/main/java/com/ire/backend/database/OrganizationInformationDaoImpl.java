@@ -31,8 +31,9 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
                     "instagram_url," +
                     "youtube_url," +
                     "member_since," +
-                    "last_updated) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", idColumn);
+                    "last_updated," +
+                    "organization_id)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", idColumn);
 
             ps.setString(1, organizationInformation.getCompanyName());
             ps.setString(2, organizationInformation.getCompanyDescription());
@@ -43,6 +44,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
             ps.setString(7, organizationInformation.getYoutubeUrl());
             ps.setLong(8, organizationInformation.getMemberSince());
             ps.setLong(9, organizationInformation.getLastUpdated());
+            ps.setObject(10, organizationInformation.getOrganizationId(), OTHER);
             ps.execute();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -63,7 +65,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
     }
 
     @Override
-    public OrganizationInformation getOrganizationInformation(final String organizationId) {
+    public OrganizationInformation getOrganizationInformation(final String organizationInformationId) {
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             String sql = "SELECT id, " +
@@ -75,10 +77,11 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
                     "    instagram_url, " +
                     "    youtube_url, " +
                     "    member_since, " +
+                    "    organization_id, " +
                     "    last_updated FROM organization_information WHERE id = ?";
 
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setLong(1, Long.parseLong(organizationId));
+            ps.setLong(1, Long.parseLong(organizationInformationId));
             ResultSet rs = ps.executeQuery();
             OrganizationInformation organizationInformation = null;
             if (rs.next()) {
@@ -93,7 +96,8 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
                         rs.getString("instagram_url"),
                         rs.getString("youtube_url"),
                         rs.getLong("member_since"),
-                        rs.getLong("last_updated")
+                        rs.getLong("last_updated"),
+                        rs.getString("organization_id")
                 );
             }
             rs.close();
