@@ -29,7 +29,7 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldDeleteOrganizationInformation() {
+    public void shouldDeletePropertyDetails() {
         PropertyDetailsFixture fixture = new PropertyDetailsFixture();
         givenPropertyDetailsCreated(fixture, dsl);
 
@@ -38,7 +38,7 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldNotDeleteOrganizationInformationIfDoesntExist() {
+    public void shouldNotDeletePropertyDetailsIfDoesntExist() {
         PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.deletePropertyDetailsRequest("0"));
@@ -46,7 +46,7 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldUpdateOrganizationInformation() {
+    public void shouldUpdatePropertyDetails() {
         PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         givenPropertyDetailsCreated(fixture, dsl);
@@ -59,7 +59,7 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldNotUpdateOrganizationInformationIfDoesntExist() {
+    public void shouldNotUpdatePropertyDetailsIfDoesntExist() {
         PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.updatePropertyDetailsRequest("0"));

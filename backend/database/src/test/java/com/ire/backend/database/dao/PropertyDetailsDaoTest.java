@@ -364,7 +364,7 @@ public class PropertyDetailsDaoTest {
         Assertions.assertEquals(expected.getBeds(), actual.getBeds());
         Assertions.assertEquals(expected.getBathrooms(), actual.getBathrooms());
         Assertions.assertEquals(expected.getPrice(), actual.getPrice());
-        Assertions.assertEquals(expected.getOrganizationInformationId(), actual.getOrganizationInformationId());
+        Assertions.assertEquals(expected.getOrganizationId(), actual.getOrganizationId());
     }
 
 }

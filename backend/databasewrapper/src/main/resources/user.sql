@@ -32,7 +32,7 @@ property_details (
   bathrooms int null,
   price text null,
   currency text null,
-  organization_information_id text,
+  organization_id text,
   constraint property_details_pkey primary key (id)
 );
 
@@ -46,7 +46,7 @@ create table if not exists
     county text null,
     postcode text null,
     country text null,
-    organization_information_id text,
+    organization_id text,
     constraint property_address_pkey primary key (id)
   );
 

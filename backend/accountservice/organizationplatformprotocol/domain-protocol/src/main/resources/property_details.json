@@ -38,7 +38,7 @@
         "type" : "string"
       }
     },
-    "organizationInformationId": {
+    "organizationId": {
       "type": "string"
     }
   }

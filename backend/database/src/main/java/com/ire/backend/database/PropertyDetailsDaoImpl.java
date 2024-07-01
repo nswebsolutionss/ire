@@ -37,7 +37,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                      bathrooms,
                      price,
                      currency,
-                     organization_information_id)
+                     organization_id)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     RETURNING id
                    )
@@ -49,7 +49,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                     postcode,
                     country,
                     property_details_id,
-                    organization_information_id)
+                    organization_id)
                     VALUES(?, ?, ?, ?, ?, ?, (select id from details_insert), ?);
                 """;
 
@@ -65,7 +65,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             ps.setInt(5, (int) propertyDetails.getBathrooms());
             ps.setString(6, String.valueOf(propertyDetails.getPrice().value()));
             ps.setString(7, propertyDetails.getPrice().currency().getCurrencyCode());
-            ps.setObject(8, propertyDetails.getOrganizationInformationId(), OTHER);
+            ps.setObject(8, propertyDetails.getOrganizationId(), OTHER);
 
             ps.setString(9, propertyDetails.getAddress().buildingIdentifier());
             ps.setString(10, propertyDetails.getAddress().streetName());
@@ -73,7 +73,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
             ps.setString(12, propertyDetails.getAddress().county());
             ps.setString(13, propertyDetails.getAddress().postcode());
             ps.setString(14, propertyDetails.getAddress().country());
-            ps.setObject(15, propertyDetails.getOrganizationInformationId(), OTHER);
+            ps.setObject(15, propertyDetails.getOrganizationId(), OTHER);
 
             ps.execute();
 
@@ -106,7 +106,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                     property_details.bathrooms,
                     property_details.price,
                     property_details.currency,
-                    property_details.organization_information_id,
+                    property_details.organization_id,
                     property_address.building_identifier,
                     property_address.street_name,
                     property_address.city,
@@ -144,7 +144,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                         rs.getDouble("bathrooms"),
                         new Price(rs.getDouble("price"), Currency.getInstance(rs.getString("currency"))),
                         List.of(),
-                        rs.getString("organization_information_id")
+                        rs.getString("organization_id")
                 );
             }
             rs.close();
@@ -170,7 +170,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                     property_details.bathrooms,
                     property_details.price,
                     property_details.currency,
-                    property_details.organization_information_id,
+                    property_details.organization_id,
                     property_address.building_identifier,
                     property_address.street_name,
                     property_address.city,
@@ -180,7 +180,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                 FROM
                     property_details
                     INNER JOIN property_address ON property_address.property_details_id = property_details.id
-                WHERE property_details.organization_information_id = ?
+                WHERE property_details.organization_id = ?
                 """;
 
         Connection connection = DataSourceFactory.ownerDataSource();
@@ -209,7 +209,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                                 rs.getDouble("bathrooms"),
                                 new Price(rs.getDouble("price"), Currency.getInstance(rs.getString("currency"))),
                                 List.of(),
-                                rs.getString("organization_information_id")
+                                rs.getString("organization_id")
                         )
                 );
             }
@@ -237,7 +237,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                     property_details.bathrooms,
                     property_details.price,
                     property_details.currency,
-                    property_details.organization_information_id,
+                    property_details.organization_id,
                     property_address.building_identifier,
                     property_address.street_name,
                     property_address.city,
@@ -274,7 +274,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                                 rs.getDouble("bathrooms"),
                                 new Price(rs.getDouble("price"), Currency.getInstance(rs.getString("currency"))),
                                 List.of(),
-                                rs.getString("organization_information_id")
+                                rs.getString("organization_id")
                         )
                 );
             }

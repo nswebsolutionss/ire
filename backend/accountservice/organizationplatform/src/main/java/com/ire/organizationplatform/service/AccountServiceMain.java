@@ -87,7 +87,7 @@ public class AccountServiceMain {
                     router.get("/api/properties/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new GetPropertyDetailsHandler(serviceInteraction))
                     );
-                    router.get("/api/properties/organizationInformation/:id").handler(
+                    router.get("/api/properties/organization/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new GetAllPropertyDetailsForOrganizationHandler(serviceInteraction))
                     );
                     router.get("/api/properties").handler(
