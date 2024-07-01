@@ -105,8 +105,8 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private void waitForResponseAndAssert(ResponseMessage expected) {
 
         Awaitility.await(Thread.currentThread().getName())
-                .timeout(10, TimeUnit.SECONDS)
-                .pollInterval(1, TimeUnit.MILLISECONDS)
+                .timeout(2, TimeUnit.SECONDS)
+                .pollInterval(500, TimeUnit.MILLISECONDS)
                 .untilAsserted(
                         () -> {
 

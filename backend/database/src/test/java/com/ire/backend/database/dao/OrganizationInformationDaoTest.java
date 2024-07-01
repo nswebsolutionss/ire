@@ -45,7 +45,7 @@ public class OrganizationInformationDaoTest {
 
         String result = organizationInformationDao.insertOrganizationInformation(organizationInformation);
 
-        Assertions.assertEquals(uuid, result);
+        Assertions.assertNotNull(result);
     }
 
     @Test
@@ -155,7 +155,6 @@ public class OrganizationInformationDaoTest {
     private static void assertOrganizationInformation(OrganizationInformation actualOrgInfo, OrganizationInformation expectedOrgInfo) {
         Assertions.assertNotNull(actualOrgInfo);
 
-        Assertions.assertEquals(expectedOrgInfo.getId(), actualOrgInfo.getId());
         Assertions.assertEquals(expectedOrgInfo.getCompanyName(), actualOrgInfo.getCompanyName());
         Assertions.assertEquals(expectedOrgInfo.getCompanyDescription(), actualOrgInfo.getCompanyDescription());
         Assertions.assertEquals(expectedOrgInfo.getTelephoneNumber(), actualOrgInfo.getTelephoneNumber());

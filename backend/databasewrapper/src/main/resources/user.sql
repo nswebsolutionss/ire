@@ -9,7 +9,7 @@ create table if not exists
 
 create table if not exists
   organization_information (
-    id text not null,
+    id bigint generated always as identity,
     company_name text null,
     company_description text null,
     telephone_number text null,

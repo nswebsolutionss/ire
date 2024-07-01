@@ -12,18 +12,7 @@ import static com.ire.organizationplatform.service.scenarios.sequences.Sequences
 public class OrganizationInformationTest {
 
     @RegisterExtension
-    private final IntegrationDsl dsl = IntegrationDsl.newDsl();
-
-    @Test
-    public void shouldNotCreateOrganizationInformationIfAlreadyExists() {
-        OrganizationInformationFixture fixture = new OrganizationInformationFixture();
-
-        dsl.webUser().when().httpUser().sends(fixture.createOrganizationInformationRequest());
-        dsl.webUser().then().httpUser().receives(fixture.successResponse("Successfully created Organization Information"));
-
-        dsl.webUser().when().httpUser().sends(fixture.createOrganizationInformationRequest());
-        dsl.webUser().then().httpUser().receives(fixture.conflictResponse("Organization Information already exists"));
-    }
+    private final IntegrationDsl dsl = IntegrationDsl.newDslIgnoringIds();
 
     @Test
     public void shouldGetOrganizationInformation() {
@@ -52,7 +41,7 @@ public class OrganizationInformationTest {
     public void shouldNotDeleteOrganizationInformationIfDoesntExist() {
         OrganizationInformationFixture fixture = new OrganizationInformationFixture();
 
-        dsl.webUser().when().httpUser().sends(fixture.deleteOrganizationInformationRequest());
+        dsl.webUser().when().httpUser().sends(fixture.invalidDeleteOrganizationInformationRequest());
         dsl.webUser().then().httpUser().receives(fixture.notFoundResponse("Unable to delete Organization Information"));
     }
 

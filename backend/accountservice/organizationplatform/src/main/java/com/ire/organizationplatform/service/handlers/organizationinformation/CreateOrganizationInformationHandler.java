@@ -31,13 +31,9 @@ public class CreateOrganizationInformationHandler implements ProcessingHandler<O
                 serviceInteraction.createOrganizationInformation(request), false
         ).onComplete(res -> {
                     if (res.succeeded()) {
-                        if(res.result().isEmpty()) {
-                            ResponseHelper.conflict(routingContext, new Response(request.getId(), "Organization Information already exists"));
-                        }
-                        else if (res.result() == null) {
+                        if (res.result() == null) {
                             ResponseHelper.badRequest(routingContext, new Response(request.getId(), "Unable to create Organization Information"));
-                        }
-                        else {
+                        } else {
                             ResponseHelper.ok(routingContext, new Response(res.result(), "Successfully created Organization Information"));
                         }
                     } else {

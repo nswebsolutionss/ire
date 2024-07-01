@@ -23,7 +23,6 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
         Connection connection = DataSourceFactory.ownerDataSource();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT into organization_information (" +
-                    "id, " +
                     "company_name," +
                     "company_description," +
                     "telephone_number," +
@@ -33,18 +32,17 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
                     "youtube_url," +
                     "member_since," +
                     "last_updated) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", idColumn);
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);", idColumn);
 
-            ps.setObject(1, organizationInformation.getId(), OTHER);
-            ps.setString(2, organizationInformation.getCompanyName());
-            ps.setString(3, organizationInformation.getCompanyDescription());
-            ps.setString(4, organizationInformation.getTelephoneNumber());
-            ps.setString(5, organizationInformation.getWebsiteUrl());
-            ps.setString(6, organizationInformation.getFacebookUrl());
-            ps.setString(7, organizationInformation.getInstagramUrl());
-            ps.setString(8, organizationInformation.getYoutubeUrl());
-            ps.setLong(9, organizationInformation.getMemberSince());
-            ps.setLong(10, organizationInformation.getLastUpdated());
+            ps.setString(1, organizationInformation.getCompanyName());
+            ps.setString(2, organizationInformation.getCompanyDescription());
+            ps.setString(3, organizationInformation.getTelephoneNumber());
+            ps.setString(4, organizationInformation.getWebsiteUrl());
+            ps.setString(5, organizationInformation.getFacebookUrl());
+            ps.setString(6, organizationInformation.getInstagramUrl());
+            ps.setString(7, organizationInformation.getYoutubeUrl());
+            ps.setLong(8, organizationInformation.getMemberSince());
+            ps.setLong(9, organizationInformation.getLastUpdated());
             ps.execute();
             ResultSet generatedKeys = ps.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -80,7 +78,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
                     "    last_updated FROM organization_information WHERE id = ?";
 
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setObject(1, organizationId, OTHER);
+            ps.setLong(1, Long.parseLong(organizationId));
             ResultSet rs = ps.executeQuery();
             OrganizationInformation organizationInformation = null;
             if (rs.next()) {
@@ -116,7 +114,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM organization_information WHERE id = ?", idColumn);
             String generatedKey = null;
-            ps.setObject(1, uuid, OTHER);
+            ps.setLong(1, Long.parseLong(uuid));
 
             ps.execute();
             ResultSet rs = ps.getGeneratedKeys();
@@ -163,7 +161,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
             ps.setString(7, organizationInformation.getYoutubeUrl());
             ps.setLong(8, organizationInformation.getMemberSince());
             ps.setLong(9, organizationInformation.getLastUpdated());
-            ps.setObject(10, organizationInformation.getId(), OTHER);
+            ps.setLong(10, Long.parseLong(organizationInformation.getId()));
 
             ps.execute();
 

@@ -7,18 +7,19 @@ import com.ire.organizationplatform.service.messages.SuccessResponseMessage;
 import com.ire.organizationplatform.service.support.ContentType;
 import io.vertx.core.http.HttpMethod;
 
+import java.util.Random;
 import java.util.UUID;
 
+import static com.ire.organizationplatform.service.support.RestApi.idsSeen;
+
 public class OrganizationInformationFixture {
-    private final String id = UUID.randomUUID().toString();
     private final long memberSince = System.currentTimeMillis();
     private final long lastUpdated = System.currentTimeMillis();
     private long lastUpdatedUpdate;
 
-    public OrganizationInformationRequestMessage createOrganizationInformationRequest()
-    {
+    public OrganizationInformationRequestMessage createOrganizationInformationRequest() {
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                id,
+                "",
                 "companyName",
                 "companyDescription",
                 "telephoneNumber",
@@ -39,13 +40,13 @@ public class OrganizationInformationFixture {
     public OrganizationInformationRequestMessage getOrganizationInformationRequest() {
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/organizationInformation/" + id)
+                .uri("/api/organizationInformation/" + idsSeen.getLast())
                 .method(HttpMethod.GET);
     }
 
     public SuccessResponseMessage getOrganizationInformationResponse() {
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                id,
+                "",
                 "companyName",
                 "companyDescription",
                 "telephoneNumber",
@@ -66,14 +67,21 @@ public class OrganizationInformationFixture {
     public OrganizationInformationRequestMessage deleteOrganizationInformationRequest() {
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/organizationInformation/" + id)
+                .uri("/api/organizationInformation/" + idsSeen.getLast())
+                .method(HttpMethod.DELETE);
+    }
+
+    public OrganizationInformationRequestMessage invalidDeleteOrganizationInformationRequest() {
+        return new OrganizationInformationRequestMessage()
+                .contentType(ContentType.JSON)
+                .uri("/api/organizationInformation/12345567")
                 .method(HttpMethod.DELETE);
     }
 
     public OrganizationInformationRequestMessage updateOrganizationInformationRequest() {
         lastUpdatedUpdate = System.currentTimeMillis();
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                id,
+                idsSeen.getLast(),
                 "newCompanyName",
                 "newCompanyDescription",
                 "newTelephoneNumber",
@@ -93,7 +101,7 @@ public class OrganizationInformationFixture {
 
     public SuccessResponseMessage updatedGetOrganizationInformationResponse() {
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                id,
+                "",
                 "newCompanyName",
                 "newCompanyDescription",
                 "newTelephoneNumber",
@@ -113,21 +121,21 @@ public class OrganizationInformationFixture {
     // Responses
 
     public SuccessResponseMessage successResponse(final String message) {
-        Response contentBody = new Response(id, message);
+        Response contentBody = new Response("", message);
         return new SuccessResponseMessage().statusCode(200)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);
     }
 
     public SuccessResponseMessage notFoundResponse(final String message) {
-        Response contentBody = new Response(id, message);
+        Response contentBody = new Response("", message);
         return new SuccessResponseMessage().statusCode(404)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);
     }
 
     public SuccessResponseMessage conflictResponse(final String message) {
-        Response contentBody = new Response(id, message);
+        Response contentBody = new Response("", message);
         return new SuccessResponseMessage().statusCode(409)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);

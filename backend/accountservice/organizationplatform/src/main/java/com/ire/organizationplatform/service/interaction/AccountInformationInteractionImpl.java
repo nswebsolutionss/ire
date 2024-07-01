@@ -52,11 +52,8 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
 
     @Override
     public String createOrganizationInformation(final OrganizationInformation organizationInformation) {
-        if (organizationInformationDao.getOrganizationInformation(organizationInformation.getId()) == null) {
-            return organizationInformationDao.insertOrganizationInformation(organizationInformation);
-        } else {
-            return "";
-        }
+        return organizationInformationDao.insertOrganizationInformation(organizationInformation);
+
     }
 
     @Override
