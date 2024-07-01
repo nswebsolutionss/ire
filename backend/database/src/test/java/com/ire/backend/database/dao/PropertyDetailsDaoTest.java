@@ -15,6 +15,8 @@ import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ire.backend.database.dao.OrganizationDaoSequence.prepopulateOrganization;
+
 @Tag("DaoTest")
 public class PropertyDetailsDaoTest {
 
@@ -32,6 +34,7 @@ public class PropertyDetailsDaoTest {
     public void shouldInsertPropertyDetailsAndReturnUUID() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         PropertyDetails propertyDetails = new PropertyDetails(
                 "12",
@@ -66,6 +69,7 @@ public class PropertyDetailsDaoTest {
     public void shouldGetPropertyDetails() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         PropertyDetails expected = new PropertyDetails(
                 "12",
@@ -102,6 +106,9 @@ public class PropertyDetailsDaoTest {
     public void shouldGetAllPropertyDetailsForOrganizationId() {
 
         String uuid = calculateUUID();
+        String uuid2 = calculateUUID();
+        prepopulateOrganization(uuid);
+        prepopulateOrganization(uuid2);
 
         PropertyDetails expectedFirst = new PropertyDetails(
                 "12",
@@ -162,7 +169,7 @@ public class PropertyDetailsDaoTest {
                 2,
                 new Price(12000.0, Currency.getInstance("GBP")),
                 List.of(),
-                calculateUUID()
+                uuid2
 
         );
 
@@ -188,6 +195,9 @@ public class PropertyDetailsDaoTest {
 
 
         String uuid = calculateUUID();
+        String uuid2 = calculateUUID();
+        prepopulateOrganization(uuid);
+        prepopulateOrganization(uuid2);
 
         PropertyDetails expectedFirst = new PropertyDetails(
                 "12",
@@ -227,7 +237,7 @@ public class PropertyDetailsDaoTest {
                 2,
                 new Price(12000.0, Currency.getInstance("GBP")),
                 List.of(),
-                calculateUUID()
+                uuid2
 
         );
 
@@ -252,6 +262,7 @@ public class PropertyDetailsDaoTest {
     public void shouldDeletePropertyDetails() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         PropertyDetails expected = new PropertyDetails(
                 "12",
@@ -293,6 +304,7 @@ public class PropertyDetailsDaoTest {
     public void shouldUpdatePropertyDetails() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         PropertyDetails expected = new PropertyDetails(
                 "12",
@@ -355,8 +367,7 @@ public class PropertyDetailsDaoTest {
 
     }
 
-    private static void deepAssert(final PropertyDetails expected, final PropertyDetails actual)
-    {
+    private static void deepAssert(final PropertyDetails expected, final PropertyDetails actual) {
         Assertions.assertEquals(expected.getAddress(), actual.getAddress());
         Assertions.assertEquals(expected.getDateAdded(), actual.getDateAdded());
         Assertions.assertEquals(expected.getLastUpdated(), actual.getLastUpdated());

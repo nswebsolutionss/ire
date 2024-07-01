@@ -15,16 +15,23 @@ import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ire.organizationplatform.service.support.RestApi.idsSeen;
+import static com.ire.organizationplatform.service.support.RestApi.supplementaryData;
 
 public class PropertyDetailsFixture {
-    private final String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
     private final long dateAdded = System.currentTimeMillis();
     private final long lastUpdated = System.currentTimeMillis();
     private long lastUpdatedUpdate;
 
-    public PropertyDetailsRequestMessage createPropertyDetails()
-    {
+    public PropertyDetailsFixture(String id) {
+        this.id = id;
+    }
+
+    public PropertyDetailsFixture() {
+
+    }
+
+    public PropertyDetailsRequestMessage createPropertyDetails() {
         PropertyDetails propertyDetails = new PropertyDetails(
                 "1",
                 new Address(
@@ -53,7 +60,7 @@ public class PropertyDetailsFixture {
     public PropertyDetailsRequestMessage getPropertyDetailsRequest() {
         return new PropertyDetailsRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/properties/" + idsSeen.getLast())
+                .uri("/api/properties/" + supplementaryData.getLastReceivedMessage().getString("id"))
                 .method(HttpMethod.GET);
     }
 
@@ -93,7 +100,7 @@ public class PropertyDetailsFixture {
     public OrganizationInformationRequestMessage deletePropertyDetailsRequest() {
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/properties/" + idsSeen.getLast())
+                .uri("/api/properties/" + supplementaryData.getLastReceivedMessage().getString("id"))
                 .method(HttpMethod.DELETE);
     }
 
@@ -107,7 +114,7 @@ public class PropertyDetailsFixture {
     public OrganizationInformationRequestMessage updatePropertyDetailsRequest() {
         lastUpdatedUpdate = System.currentTimeMillis();
         PropertyDetails propertyDetails = new PropertyDetails(
-                idsSeen.getLast(),
+                supplementaryData.getLastReceivedMessage().getString("id"),
                 new Address(
                         "14",
                         "Chimp Way",
@@ -162,7 +169,7 @@ public class PropertyDetailsFixture {
 
     public SuccessResponseMessage updatedGetPropertyDetailsResponse() {
         PropertyDetails propertyDetails = new PropertyDetails(
-                idsSeen.getLast(),
+                supplementaryData.getLastReceivedMessage().getString("id"),
                 new Address(
                         "14",
                         "Chimp Way",
@@ -203,7 +210,7 @@ public class PropertyDetailsFixture {
     }
 
     public SuccessResponseMessage conflictResponse(final String message) {
-        Response contentBody = new Response(idsSeen.getLast(), message);
+        Response contentBody = new Response(supplementaryData.getLastReceivedMessage().getString("id"), message);
         return new SuccessResponseMessage().statusCode(409)
                 .contentType(ContentType.JSON)
                 .contentBody(contentBody);

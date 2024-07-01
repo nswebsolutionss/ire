@@ -19,7 +19,7 @@ create table if not exists
     youtube_url text null,
     member_since bigint,
     last_updated bigint,
-    organization_id text,
+    organization_id text references organization(id) on delete cascade,
     constraint organization_information_pkey primary key (id)
   );
 
@@ -33,7 +33,7 @@ property_details (
   bathrooms int null,
   price text null,
   currency text null,
-  organization_id text,
+  organization_id text references organization(id) on delete cascade,
   constraint property_details_pkey primary key (id)
 );
 

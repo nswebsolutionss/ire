@@ -40,7 +40,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private CompletableFuture<HttpResponse<Buffer>> future = new CompletableFuture<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final List<String> ignoredResolvers = new ArrayList<>();
-    public static final List<String> idsSeen = new ArrayList<>();
+    public final static SupplemntaryData supplementaryData = new SupplemntaryData();
 
     public RestApi(List<String> ignoredResolvers) {
         this.vertx = Vertx.vertx();
@@ -53,6 +53,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     public void sends(final MessageToSend request) {
         RequestMessage messageToSend = request.toMessage();
         sentMessages.add(messageToSend);
+        supplementaryData.addSentMessage(messageToSend);
         pendingRequestList.add(
                 execAsync(messageToSend)
         );
@@ -106,7 +107,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
         Awaitility.await(Thread.currentThread().getName())
                 .timeout(2, TimeUnit.SECONDS)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
+                .pollInterval(5, TimeUnit.MILLISECONDS)
                 .untilAsserted(
                         () -> {
 
@@ -134,6 +135,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                             Assertions.assertEquals(expected.contentType, actualResponse.contentType);
                             Assertions.assertEquals(expected.headers, actualResponse.headers);
                             responses.remove(0);
+                            supplementaryData.addReceivedMessage(actualJson);
                         }
                 );
     }
@@ -142,7 +144,6 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         expected.keys().forEachRemaining(key -> {
             if (ignoredResolvers.contains(key)) {
                 Assertions.assertTrue(actual.has(key));
-                idsSeen.add((String) actual.get(key));
                 return;
             }
             if (actual.get(key) instanceof JSONObject) {
@@ -215,6 +216,23 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
             }
         } catch (final Exception e) {
             future.completeExceptionally(e);
+        }
+    }
+
+    public static class SupplemntaryData {
+        private final List<RequestMessage> sentMessages = new ArrayList<>();
+        private final List<JSONObject> receivedMessages = new ArrayList<>();
+
+        public void addSentMessage(final RequestMessage messageToSend) {
+            sentMessages.add(messageToSend);
+        }
+
+        public void addReceivedMessage(final JSONObject received) {
+            receivedMessages.add(received);
+        }
+
+        public JSONObject getLastReceivedMessage() {
+            return receivedMessages.getLast();
         }
     }
 }

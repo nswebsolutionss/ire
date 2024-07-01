@@ -10,9 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.util.UUID;
 
+import static com.ire.backend.database.dao.OrganizationDaoSequence.prepopulateOrganization;
+
 @Tag("DaoTest")
 public class OrganizationInformationDaoTest {
-    private static int counter = 0;
 
     private String calculateUUID() {
         return UUID.randomUUID().toString();
@@ -28,6 +29,7 @@ public class OrganizationInformationDaoTest {
     public void shouldInsertOrganizationInformationAndReturnUUID() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         OrganizationInformation organizationInformation = new OrganizationInformation(
                 "",
@@ -53,6 +55,7 @@ public class OrganizationInformationDaoTest {
     public void shouldGetOrganizationInformation() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         OrganizationInformation expectedOrgInfo = new OrganizationInformation(
                 "",
@@ -80,6 +83,7 @@ public class OrganizationInformationDaoTest {
     public void shouldDeleteOrganizationInformationAndReturnUUID() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         OrganizationInformation expectedOrgInfo = new OrganizationInformation(
                 "",
@@ -114,6 +118,7 @@ public class OrganizationInformationDaoTest {
     public void shouldUpdateOrganizationInformationAndReturnUUID() {
 
         String uuid = calculateUUID();
+        prepopulateOrganization(uuid);
 
         OrganizationInformation originalOrgInfo = new OrganizationInformation(
                 "",

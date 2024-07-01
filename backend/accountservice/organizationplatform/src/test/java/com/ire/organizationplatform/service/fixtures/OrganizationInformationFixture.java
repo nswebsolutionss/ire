@@ -7,16 +7,22 @@ import com.ire.organizationplatform.service.messages.SuccessResponseMessage;
 import com.ire.organizationplatform.service.support.ContentType;
 import io.vertx.core.http.HttpMethod;
 
-import java.util.Random;
 import java.util.UUID;
 
-import static com.ire.organizationplatform.service.support.RestApi.idsSeen;
+import static com.ire.organizationplatform.service.support.RestApi.supplementaryData;
 
 public class OrganizationInformationFixture {
-    private final String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString();
     private final long memberSince = System.currentTimeMillis();
     private final long lastUpdated = System.currentTimeMillis();
     private long lastUpdatedUpdate;
+
+    public OrganizationInformationFixture(String id) {
+        this.id = id;
+    }
+
+    public OrganizationInformationFixture() {
+    }
 
     public OrganizationInformationRequestMessage createOrganizationInformationRequest() {
         OrganizationInformation organizationInformation = new OrganizationInformation(
@@ -42,7 +48,14 @@ public class OrganizationInformationFixture {
     public OrganizationInformationRequestMessage getOrganizationInformationRequest() {
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/organizationInformation/" + idsSeen.getLast())
+                .uri("/api/organizationInformation/" + supplementaryData.getLastReceivedMessage().getString("id"))
+                .method(HttpMethod.GET);
+    }
+
+    public OrganizationInformationRequestMessage getOrganizationInformationRequest(final String organizationInformationId) {
+        return new OrganizationInformationRequestMessage()
+                .contentType(ContentType.JSON)
+                .uri("/api/organizationInformation/" + organizationInformationId)
                 .method(HttpMethod.GET);
     }
 
@@ -70,7 +83,7 @@ public class OrganizationInformationFixture {
     public OrganizationInformationRequestMessage deleteOrganizationInformationRequest() {
         return new OrganizationInformationRequestMessage()
                 .contentType(ContentType.JSON)
-                .uri("/api/organizationInformation/" + idsSeen.getLast())
+                .uri("/api/organizationInformation/" + supplementaryData.getLastReceivedMessage().getString("id"))
                 .method(HttpMethod.DELETE);
     }
 
@@ -84,7 +97,29 @@ public class OrganizationInformationFixture {
     public OrganizationInformationRequestMessage updateOrganizationInformationRequest() {
         lastUpdatedUpdate = System.currentTimeMillis();
         OrganizationInformation organizationInformation = new OrganizationInformation(
-                idsSeen.getLast(),
+                supplementaryData.getLastReceivedMessage().getString("id"),
+                "newCompanyName",
+                "newCompanyDescription",
+                "newTelephoneNumber",
+                "newWebsiteUrl",
+                "newFacebookUrl",
+                "newInstagramUrl",
+                "newYoutubeUrl",
+                memberSince,
+                lastUpdatedUpdate,
+                id
+        );
+        return new OrganizationInformationRequestMessage()
+                .contentType(ContentType.JSON)
+                .uri("/api/organizationInformation")
+                .method(HttpMethod.PUT)
+                .payload(organizationInformation);
+    }
+
+    public OrganizationInformationRequestMessage updateOrganizationInformationRequest(final String organizationInformationId) {
+        lastUpdatedUpdate = System.currentTimeMillis();
+        OrganizationInformation organizationInformation = new OrganizationInformation(
+                organizationInformationId,
                 "newCompanyName",
                 "newCompanyDescription",
                 "newTelephoneNumber",

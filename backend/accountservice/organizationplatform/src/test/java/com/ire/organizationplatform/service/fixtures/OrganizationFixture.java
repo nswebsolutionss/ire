@@ -12,6 +12,14 @@ import java.util.UUID;
 public class OrganizationFixture {
     private final String id = UUID.randomUUID().toString();
 
+    public OrganizationInformationFixture organizationInformationFixture() {
+        return new OrganizationInformationFixture(id);
+    }
+
+    public PropertyDetailsFixture propertyDetailsFixture() {
+        return new PropertyDetailsFixture(id);
+    }
+
     public OrganizationRequestMessage createOrganizationRequest() {
         Organization organization = new Organization(
                 id
