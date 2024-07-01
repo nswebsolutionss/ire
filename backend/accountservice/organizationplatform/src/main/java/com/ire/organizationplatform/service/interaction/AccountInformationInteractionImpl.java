@@ -26,10 +26,6 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
         this.propertyDetailsDao = new PropertyDetailsDaoImpl();
     }
 
-    /**
-     * TODO: Log error in dao and return null if error has occurred
-     */
-
     @Override
     public String createOrganization(final Organization organizationInformation) {
         if (organizationDao.getOrganization(organizationInformation.getId()) == null) {
