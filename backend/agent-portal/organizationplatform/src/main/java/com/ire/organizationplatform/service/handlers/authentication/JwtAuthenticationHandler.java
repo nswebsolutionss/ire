@@ -41,7 +41,6 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
                     .onSuccess(
                             event1 ->
                             {
-                                routingContext.request().headers().add("userId", event1.subject());
                                 routingContext.next();
                             }
                     );
@@ -52,7 +51,6 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
     private static Optional<String> tokenIsValid(final RoutingContext routingContext) {
         try {
             Cookie token = routingContext.request().getCookie("Authorization");
-            routingContext.request().cookies().forEach(cookie -> LOGGER.info(cookie.getValue() + " " + cookie.isSecure() + " " + cookie.getName()));
             return Optional.of(token.getValue());
         } catch (Exception e) {
             LOGGER.error(e);
