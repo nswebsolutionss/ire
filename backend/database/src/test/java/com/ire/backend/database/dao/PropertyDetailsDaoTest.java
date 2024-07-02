@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
@@ -25,9 +26,9 @@ public class PropertyDetailsDaoTest {
     }
 
     @Test
-    public void shouldGetConnection() {
-        Connection connection = DataSourceFactory.ownerDataSource();
-        DataSourceFactory.closeConnection(connection);
+    public void shouldGetConnection() throws SQLException {
+        DataSource connection = DataSourceFactory.ownerDataSource();
+        DataSourceFactory.closeConnection(connection.getConnection());
     }
 
     @Test
@@ -58,7 +59,7 @@ public class PropertyDetailsDaoTest {
         );
 
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = propertyDetailsDao.insertPropertyDetails(propertyDetails);
 
@@ -92,7 +93,7 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = propertyDetailsDao.insertPropertyDetails(expected);
         Assertions.assertNotNull(result);
@@ -173,7 +174,7 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
         String result = propertyDetailsDao.insertPropertyDetails(expectedFirst);
         Assertions.assertNotNull(result);
 
@@ -241,7 +242,7 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
 
         propertyDetailsDao.deleteAll();
 
@@ -285,7 +286,7 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = propertyDetailsDao.insertPropertyDetails(expected);
         PropertyDetails actual = propertyDetailsDao.getPropertyDetails(result);
@@ -327,7 +328,7 @@ public class PropertyDetailsDaoTest {
 
         );
 
-        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl();
+        PropertyDetailsDaoImpl propertyDetailsDao = new PropertyDetailsDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = propertyDetailsDao.insertPropertyDetails(expected);
         Assertions.assertNotNull(result);

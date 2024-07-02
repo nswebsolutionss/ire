@@ -5,6 +5,7 @@ import com.ire.backend.database.dao.OrganizationDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,10 +17,27 @@ public class OrganizationDaoImpl implements OrganizationDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final String[] idColumn = new String[]{"id"};
+    private final DataSource dataSource;
+
+    public OrganizationDaoImpl(DataSource dataSource) {
+
+        this.dataSource = dataSource;
+    }
+
+    private Connection getConnection() {
+        Connection connection;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            LOGGER.error("Received exception when attempting to get dataSource connection: " + e);
+            throw new RuntimeException(e);
+        }
+        return connection;
+    }
 
     @Override
     public String insertOrganization(Organization organization) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(
                     "INSERT into organization (id) VALUES (?);",
@@ -48,7 +66,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
 
     @Override
     public Organization getOrganization(final String organizationId) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             String sql = "SELECT id FROM organization WHERE id = ?";
 
@@ -73,7 +91,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
 
     @Override
     public String deleteOrganization(final String uuid) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM organization WHERE id = ?", idColumn);
             String generatedKey = null;

@@ -5,6 +5,7 @@ import com.ire.backend.database.dao.OrganizationInformationDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,11 +17,28 @@ import static java.sql.Types.OTHER;
 public class OrganizationInformationDaoImpl implements OrganizationInformationDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
     private final String[] idColumn = new String[]{"id"};
+    private final DataSource dataSource;
+
+    public OrganizationInformationDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    private Connection getConnection() {
+        Connection connection;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            LOGGER.error("Received exception when attempting to get dataSource connection: " + e);
+            throw new RuntimeException(e);
+        }
+        return connection;
+    }
 
     @Override
     public String insertOrganizationInformation(OrganizationInformation organizationInformation) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT into organization_information (" +
                     "company_name," +
@@ -66,7 +84,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
 
     @Override
     public OrganizationInformation getOrganizationInformation(final String organizationInformationId) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             String sql = "SELECT id, " +
                     "    company_name, " +
@@ -114,7 +132,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
 
     @Override
     public String deleteOrganizationInformation(final String uuid) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM organization_information WHERE id = ?", idColumn);
             String generatedKey = null;
@@ -139,7 +157,7 @@ public class OrganizationInformationDaoImpl implements OrganizationInformationDa
 
     @Override
     public String updateOrganizationInformation(final OrganizationInformation organizationInformation) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             String sql = "UPDATE organization_information set " +
                     "company_name = ?, " +

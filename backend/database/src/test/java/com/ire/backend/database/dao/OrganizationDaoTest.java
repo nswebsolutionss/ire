@@ -7,22 +7,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @Tag("DaoTest")
 public class OrganizationDaoTest {
 
-    private final OrganizationDaoImpl organizationInformationDao = new OrganizationDaoImpl();
+    private final OrganizationDaoImpl organizationInformationDao = new OrganizationDaoImpl(DataSourceFactory.ownerDataSource());
 
     private String calculateUUID() {
         return UUID.randomUUID().toString();
     }
 
     @Test
-    public void shouldGetConnection() {
-        Connection connection = DataSourceFactory.ownerDataSource();
-        DataSourceFactory.closeConnection(connection);
+    public void shouldGetConnection() throws SQLException {
+        DataSource connection = DataSourceFactory.ownerDataSource();
+        DataSourceFactory.closeConnection(connection.getConnection());
     }
 
     @Test
@@ -47,7 +48,7 @@ public class OrganizationDaoTest {
         Organization expectedOrgInfo = new Organization(
                 uuid
         );
-        OrganizationDao organizationInformationDao = new OrganizationDaoImpl();
+        OrganizationDao organizationInformationDao = new OrganizationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganization(expectedOrgInfo);
 
@@ -65,7 +66,7 @@ public class OrganizationDaoTest {
         Organization expectedOrgInfo = new Organization(
                 uuid
         );
-        OrganizationDao organizationInformationDao = new OrganizationDaoImpl();
+        OrganizationDao organizationInformationDao = new OrganizationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganization(expectedOrgInfo);
 

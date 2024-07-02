@@ -1,5 +1,4 @@
-CREATE USER db_user WITH PASSWORD 'P4ssword.';
-GRANT ALL PRIVILEGES ON DATABASE ire TO db_user;
+
 
 create table if not exists
     organization (

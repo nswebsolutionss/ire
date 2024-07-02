@@ -8,6 +8,7 @@ import com.organizationplatform.protocol.domain.types.PropertyType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +24,22 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final String[] idColumn = new String[]{"id"};
+    private final DataSource dataSource;
+
+    public PropertyDetailsDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    private Connection getConnection() {
+        Connection connection;
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            LOGGER.error("Received exception when attempting to get dataSource connection: " + e);
+            throw new RuntimeException(e);
+        }
+        return connection;
+    }
 
     @Override
     public String insertPropertyDetails(final PropertyDetails propertyDetails) {
@@ -54,7 +71,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                 """;
 
         // TODO: FIX PROPERTY DETAILS ID TO BE LONG AND NOT STRING
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(sql, idColumn);
 
@@ -119,7 +136,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                 WHERE property_details.id = ?
                 """;
 
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setLong(1, Long.parseLong(uuid));
@@ -183,7 +200,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                 WHERE property_details.organization_id = ?
                 """;
 
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setObject(1, organizationId, OTHER);
@@ -249,7 +266,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                     INNER JOIN property_address ON property_address.property_details_id = property_details.id
                 """;
 
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -292,7 +309,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
 
     @Override
     public String deletePropertyDetails(final String uuid) {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM property_details WHERE id = ?", idColumn);
             String generatedKey = null;
@@ -320,7 +337,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
      * @return
      */
     public void deleteAll() {
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM property_details");
             ps.execute();
@@ -361,7 +378,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
                 """;
 
 
-        Connection connection = DataSourceFactory.ownerDataSource();
+        Connection connection = getConnection();
         try {
 
             String generatedKey = null;

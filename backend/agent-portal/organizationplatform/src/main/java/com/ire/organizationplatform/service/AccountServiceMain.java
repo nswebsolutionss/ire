@@ -4,6 +4,7 @@ import com.generated.organizationplatform.protocol.domain.Organization;
 import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
 import com.generated.organizationplatform.protocol.request.Request;
+import com.ire.backend.database.DataSourceFactory;
 import com.ire.organizationplatform.service.contract.AccountServiceInteraction;
 import com.ire.organizationplatform.service.handlers.JsonDecodingHandler;
 import com.ire.organizationplatform.service.handlers.UrlParamsDecodingHandler;
@@ -24,20 +25,22 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.handler.CorsHandler;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Set;
 
 public class AccountServiceMain {
 
-    public static VertxWebApp newVertxWebApp(final WebAppConfig config) {
+    public static VertxWebApp newVertxWebApp(final WebAppConfig config, DataSource dataSource) {
         final VertxWebApp vertxWebApp = new VertxWebApp(config);
-        final AccountServiceInteraction serviceInteraction = new AccountInformationInteractionImpl();
+        final AccountServiceInteraction serviceInteraction = new AccountInformationInteractionImpl(dataSource);
         routes(vertxWebApp, serviceInteraction);
         return vertxWebApp;
     }
 
     public static void main(String[] args) {
-        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"));
+
+        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"), DataSourceFactory.ownerDataSource());
         Vertx vertx = Vertx.vertx(new VertxOptions().setWorkerPoolSize(32));
         vertx.deployVerticle(vertxWebApp);
     }
@@ -57,15 +60,12 @@ public class AccountServiceMain {
                     router.route("/api/*").handler(
                             new JwtAuthenticationHandler(jwtAuth)
                     );
-                    // Organization routes
                     router.get("/api/organization/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new GetOrganizationHandler(serviceInteraction))
                     );
                     router.delete("/api/organization/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new DeleteOrganizationHandler(serviceInteraction))
                     );
-
-                    // Organization Information routes
                     router.post("/api/organizationInformation").handler(
                             new JsonDecodingHandler<>(OrganizationInformation.class, new CreateOrganizationInformationHandler(serviceInteraction))
                     );
@@ -78,8 +78,6 @@ public class AccountServiceMain {
                     router.delete("/api/organizationInformation/:id").handler(
                             new UrlParamsDecodingHandler<>(Request.class, new DeleteOrganizationInformationHandler(serviceInteraction))
                     );
-
-                    // Property routes
                     router.post("/api/properties").handler(
                             new JsonDecodingHandler<>(PropertyDetails.class, new CreatePropertyDetailsHandler(serviceInteraction))
                     );

@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import static com.ire.backend.database.dao.OrganizationDaoSequence.prepopulateOrganization;
@@ -20,9 +21,9 @@ public class OrganizationInformationDaoTest {
     }
 
     @Test
-    public void shouldGetConnection() {
-        Connection connection = DataSourceFactory.ownerDataSource();
-        DataSourceFactory.closeConnection(connection);
+    public void shouldGetConnection() throws SQLException {
+        DataSource connection = DataSourceFactory.ownerDataSource();
+        DataSourceFactory.closeConnection(connection.getConnection());
     }
 
     @Test
@@ -44,7 +45,7 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 uuid
         );
-        OrganizationInformationDaoImpl organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDaoImpl organizationInformationDao = new OrganizationInformationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganizationInformation(organizationInformation);
 
@@ -70,7 +71,7 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 uuid
         );
-        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganizationInformation(expectedOrgInfo);
 
@@ -98,7 +99,7 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 uuid
         );
-        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganizationInformation(expectedOrgInfo);
 
@@ -133,7 +134,7 @@ public class OrganizationInformationDaoTest {
                 System.currentTimeMillis(),
                 uuid
         );
-        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl();
+        OrganizationInformationDao organizationInformationDao = new OrganizationInformationDaoImpl(DataSourceFactory.ownerDataSource());
 
         String result = organizationInformationDao.insertOrganizationInformation(originalOrgInfo);
 

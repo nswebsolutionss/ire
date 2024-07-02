@@ -11,6 +11,7 @@ import com.ire.backend.database.dao.OrganizationInformationDao;
 import com.ire.backend.database.dao.PropertyDetailsDao;
 import com.ire.organizationplatform.service.contract.AccountServiceInteraction;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 public class AccountInformationInteractionImpl implements AccountServiceInteraction {
@@ -19,11 +20,11 @@ public class AccountInformationInteractionImpl implements AccountServiceInteract
     private final OrganizationInformationDao organizationInformationDao;
     private final PropertyDetailsDao propertyDetailsDao;
 
-    public AccountInformationInteractionImpl() {
+    public AccountInformationInteractionImpl(final DataSource dataSource) {
 
-        this.organizationDao = new OrganizationDaoImpl();
-        this.organizationInformationDao = new OrganizationInformationDaoImpl();
-        this.propertyDetailsDao = new PropertyDetailsDaoImpl();
+        this.organizationDao = new OrganizationDaoImpl(dataSource);
+        this.organizationInformationDao = new OrganizationInformationDaoImpl(dataSource);
+        this.propertyDetailsDao = new PropertyDetailsDaoImpl(dataSource);
     }
 
     @Override

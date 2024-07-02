@@ -2,22 +2,19 @@ package com.ire.backend.database;
 
 import org.postgresql.ds.PGSimpleDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DataSourceFactory {
 
-    public static Connection ownerDataSource() {
+    public static DataSource ownerDataSource() {
         final PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String[] serverName = {"localhost"};
         dataSource.setServerNames(serverName);
         dataSource.setDatabaseName("ire");
         dataSource.setUser("superuser");
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return dataSource;
     }
 
 //    public static Connection ownerDataSource(final String organizationInformationId)

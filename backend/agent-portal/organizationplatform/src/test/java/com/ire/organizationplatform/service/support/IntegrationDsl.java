@@ -1,8 +1,10 @@
 package com.ire.organizationplatform.service.support;
 
+import com.ire.database.DatabaseWrapperConfig;
 import com.ire.organizationplatform.service.AccountServiceMain;
 import com.ire.webapp.VertxWebApp;
 import com.ire.webapp.WebAppConfig;
+import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Handler;
@@ -11,6 +13,9 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -20,6 +25,9 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
     private final Vertx vertx = Vertx.vertx();
     private final DslWrapper<WebUserDsl> webUserDslWrapper;
     private final List<String> ignoredResolvers = new ArrayList<>();
+    private EmbeddedPostgres embeddedPostgres;
+    private DataSource dataSource;
+
 
     public IntegrationDsl(final List<String> ignoredResolvers) {
         this.ignoredResolvers.addAll(ignoredResolvers);
@@ -43,8 +51,14 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
-        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"));
+    public void beforeEach(ExtensionContext extensionContext) throws IOException, SQLException {
+        EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder();
+        embeddedPostgres = builder.start();
+        dataSource = embeddedPostgres.getPostgresDatabase();
+
+        dataSource.getConnection().prepareStatement(new String(new DatabaseWrapperConfig().setupScript.readAllBytes())).execute();
+
+        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"), dataSource);
         vertx.deployVerticle(vertxWebApp, new DeploymentOptions().setWorkerPoolSize(1));
     }
 
