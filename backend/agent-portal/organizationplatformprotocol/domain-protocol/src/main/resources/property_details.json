@@ -1,0 +1,45 @@
+{
+  "title": "PropertyDetails",
+  "type": "object",
+  "javaInterfaces": [],
+  "required": [],
+  "properties": {
+    "id": {
+      "type": "string",
+      "existingJavaType": "String",
+      "description": "Identifier of the property"
+    },
+    "address": {
+      "existingJavaType": "com.organizationplatform.protocol.domain.types.Address"
+    },
+    "dateAdded": {
+      "type": "number",
+      "existingJavaType": "long"
+    },
+    "lastUpdated": {
+      "type": "number",
+      "existingJavaType": "long"
+    },
+    "propertyType": {
+      "existingJavaType": "com.organizationplatform.protocol.domain.types.PropertyType"
+    },
+    "beds": {
+      "type": "number"
+    },
+    "bathrooms": {
+      "type": "number"
+    },
+    "price": {
+      "existingJavaType": "com.organizationplatform.protocol.domain.types.Price"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "organizationId": {
+      "type": "string"
+    }
+  }
+}

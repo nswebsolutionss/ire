@@ -1,7 +1,6 @@
 package com.ire.backend.database.dao;
 
 import com.generated.organizationplatform.protocol.domain.Organization;
-import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 
 public interface OrganizationDao {
     Organization getOrganization(String uuid);

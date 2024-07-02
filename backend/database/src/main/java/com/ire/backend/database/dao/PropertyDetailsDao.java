@@ -1,6 +1,5 @@
 package com.ire.backend.database.dao;
 
-import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.generated.organizationplatform.protocol.domain.PropertyDetails;
 
 import java.util.List;

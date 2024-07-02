@@ -1,10 +1,8 @@
 package com.ire.backend.database.dao;
 
 import com.generated.organizationplatform.protocol.domain.Organization;
-import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.ire.backend.database.DataSourceFactory;
 import com.ire.backend.database.OrganizationDaoImpl;
-import com.ire.backend.database.OrganizationInformationDaoImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

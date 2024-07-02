@@ -1,7 +1,6 @@
 package com.ire.webapp;
 
-public class WebAppConfig
-{
+public class WebAppConfig {
 
     private final int port;
     private final String host;
@@ -17,5 +16,9 @@ public class WebAppConfig
 
     public String host() {
         return host;
+    }
+
+    public int tokenExpirySeconds() {
+        return 8600;
     }
 }

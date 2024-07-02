@@ -1,9 +1,7 @@
 package com.ire.backend.database;
 
 import com.generated.organizationplatform.protocol.domain.Organization;
-import com.generated.organizationplatform.protocol.domain.OrganizationInformation;
 import com.ire.backend.database.dao.OrganizationDao;
-import com.ire.backend.database.dao.OrganizationInformationDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.ire.backend.database.DataSourceFactory.closeConnection;
-import static java.sql.Types.OTHER;
 
 public class OrganizationDaoImpl implements OrganizationDao {
 

@@ -1,23 +1,15 @@
 package com.ire.backend.database;
 
-import io.vertx.core.Vertx;
-import io.vertx.pgclient.PgBuilder;
-import io.vertx.pgclient.PgConnectOptions;
-import io.vertx.sqlclient.PoolOptions;
-import io.vertx.sqlclient.SqlClient;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.ire.backend.database.utils.CurrentAgentSession.setCurrentAgent;
-
 public class DataSourceFactory {
 
-    public static Connection ownerDataSource()
-    {
+    public static Connection ownerDataSource() {
         final PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        String [] serverName = {"localhost"};
+        String[] serverName = {"localhost"};
         dataSource.setServerNames(serverName);
         dataSource.setDatabaseName("ire");
         dataSource.setUser("superuser");
@@ -45,7 +37,7 @@ public class DataSourceFactory {
 //    }
 
     public static void closeConnection(final Connection connection) {
-        try{
+        try {
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);

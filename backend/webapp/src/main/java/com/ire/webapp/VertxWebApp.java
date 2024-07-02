@@ -3,36 +3,55 @@ package com.ire.webapp;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServer;
+import io.vertx.ext.auth.JWTOptions;
+import io.vertx.ext.auth.jwt.JWTAuth;
+import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.Router;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class VertxWebApp extends AbstractVerticle {
     private static final Logger LOGGER = LogManager.getLogger();
     private final WebAppConfig config;
-    private Consumer<Router> routerConsumer;
-
+    private BiConsumer<Router, JWTAuth> authRouteConsumer;
+    private Consumer<Router> routeConsumer;
+    private final JWTAuth authProvider;
 
     public VertxWebApp(final WebAppConfig config) {
         this.config = config;
+        this.authProvider = JWTAuth.create(
+                vertx,
+                new JWTAuthOptions().setJWTOptions(
+                        new JWTOptions().setExpiresInSeconds(config.tokenExpirySeconds())
+                )
+        );
     }
 
     @Override
     public void start(Promise<Void> startPromise) {
         Router router = Router.router(vertx);
 
-        if(routerConsumer == null) {
-            throw new RuntimeException("Expected router consumer to not be null");
+        if (authRouteConsumer == null && routeConsumer == null) {
+            throw new RuntimeException("Expected at least one route consumer");
+        } else if (authRouteConsumer != null) {
+
+            authRouteConsumer.accept(router, authProvider);
+        } else {
+            routeConsumer.accept(router);
         }
-        routerConsumer.accept(router);
 
         startHttpsServer(startPromise, router);
     }
 
-    public void withRoutes(final Consumer<Router> routes) {
-        this.routerConsumer = routes;
+    public void withRoutes(final BiConsumer<Router, JWTAuth> routes) {
+        this.authRouteConsumer = routes;
+    }
+
+    public void withRoutesNoAuth(final Consumer<Router> routes) {
+        this.routeConsumer = routes;
     }
 
     private void startHttpsServer(Promise<Void> startPromise, Router router) {
@@ -52,8 +71,6 @@ public class VertxWebApp extends AbstractVerticle {
             }
         });
     }
-
-
 
 
 }
