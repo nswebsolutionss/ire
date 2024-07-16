@@ -34,9 +34,7 @@ export const NavBar: React.FC<NavBarProps> = () => {
                     </Element>
                 </Container>
             </div>
-        
-            <SignIn afterSignInUrl={"/dashboard"}/>
-            
+                
         </>
     )
 }

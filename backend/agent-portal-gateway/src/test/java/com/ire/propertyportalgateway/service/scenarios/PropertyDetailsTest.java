@@ -1,45 +1,37 @@
-package com.ire.organizationplatform.service.scenarios;
+package com.ire.propertyportalgateway.service.scenarios;
 
-import com.ire.organizationplatform.service.fixtures.OrganizationFixture;
-import com.ire.organizationplatform.service.fixtures.PropertyDetailsFixture;
-import com.ire.organizationplatform.service.support.IntegrationDsl;
-import org.junit.jupiter.api.BeforeEach;
+import com.ire.propertyportalgateway.service.fixtures.PropertyDetailsFixture;
+import com.ire.propertyportalgateway.service.support.IntegrationDsl;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import static com.ire.organizationplatform.service.scenarios.sequences.Sequences.givenOrganizationCreated;
-import static com.ire.organizationplatform.service.scenarios.sequences.Sequences.givenPropertyDetailsCreated;
+import static com.ire.propertyportalgateway.service.scenarios.sequences.Sequences.givenPropertyDetailsCreated;
+
 
 @Tag("IntegrationTest")
 public class PropertyDetailsTest {
 
     @RegisterExtension
     private final IntegrationDsl dsl = IntegrationDsl.newDslIgnoringIds();
-    private final OrganizationFixture organizationFixture = new OrganizationFixture();
-
-    @BeforeEach
-    public void setup() {
-        givenOrganizationCreated(organizationFixture, dsl);
-    }
 
     @Test
     public void shouldGetPropertyDetails() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
         givenPropertyDetailsCreated(fixture, dsl);
     }
 
     @Test
     public void shouldNotGetPropertyDetailsIfIdDoesntExist() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.getPropertyDetailsRequest("0"));
         dsl.webUser().then().httpUser().receives(fixture.notFoundResponse("Unable to get Property Details"));
     }
 
     @Test
-    public void shouldDeletePropertyDetails() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+    public void shouldDeleteOrganizationInformation() {
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
         givenPropertyDetailsCreated(fixture, dsl);
 
         dsl.webUser().when().httpUser().sends(fixture.deletePropertyDetailsRequest());
@@ -47,16 +39,16 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldNotDeletePropertyDetailsIfDoesntExist() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+    public void shouldNotDeleteOrganizationInformationIfDoesntExist() {
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.deletePropertyDetailsRequest("0"));
         dsl.webUser().then().httpUser().receives(fixture.notFoundResponse("Unable to delete Property Details"));
     }
 
     @Test
-    public void shouldUpdatePropertyDetails() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+    public void shouldUpdateOrganizationInformation() {
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         givenPropertyDetailsCreated(fixture, dsl);
 
@@ -68,18 +60,11 @@ public class PropertyDetailsTest {
     }
 
     @Test
-    public void shouldNotUpdatePropertyDetailsIfDoesntExist() {
-        PropertyDetailsFixture fixture = organizationFixture.propertyDetailsFixture();
+    public void shouldNotUpdateOrganizationInformationIfDoesntExist() {
+        PropertyDetailsFixture fixture = new PropertyDetailsFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.updatePropertyDetailsRequest("0"));
         dsl.webUser().then().httpUser().receives(fixture.notFoundResponse("Unable to update Property Details"));
     }
 
-    // Client ID:
-    // 531752b5a27b659e3592aeca6866d5a8
-
-    // Client Secret:
-    // 531752b5a27b659e3592aeca6866d5a8095dd66b6f7fb132ea389b293c1600bbf386cea338c231ebb5afb9be052845f3
-
 }
-

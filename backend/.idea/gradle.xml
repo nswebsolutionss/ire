@@ -23,6 +23,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/agent-portal-gateway" />
             <option value="$PROJECT_DIR$/agent-portal/organizationplatform" />
             <option value="$PROJECT_DIR$/agent-portal/organizationplatformprotocol/domain-protocol" />
             <option value="$PROJECT_DIR$/agent-portal/organizationplatformprotocol/request-protocol" />

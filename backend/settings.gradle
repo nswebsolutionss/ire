@@ -13,6 +13,7 @@ def includeProject(String name, String path) {
 
 includeProject(':database', 'database')
 includeProject(':organization-platform', 'agent-portal/organizationplatform')
+includeProject(':agent-portal-gateway', 'agent-portal-gateway')
 includeProject(':database-wrapper', 'databasewrapper')
 includeProject(':web-app', 'webapp')
 includeProject(':release', 'release')

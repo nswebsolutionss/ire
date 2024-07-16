@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { VerticalSpacer } from "../../components/atoms/FormFields";
 import { PropertyDetailsForm } from "../../components/molecules/PropertyDetailsForm";
 import { PropertyGrid } from "../../components/molecules/PropertyGrid";
-import { useGetAllPropertiesQuery } from "../../redux/api/apiSlice";
+// import { useGetAllPropertiesQuery } from "../../redux/api/apiSlice";
 import { usePropertyStateDispatch } from "../property-slice/usePropertyStateDispatch";
 import { useSelectedPropertyId } from "../property-slice/usePropertyStateSelectors";
 
@@ -22,24 +22,24 @@ const StyledIcon = styled.div`
 `
 
 export const PropertySection: React.FC = () => {
-  const {data} = useGetAllPropertiesQuery()
-  const propertiesFormatted = data?.map((property) => {
-    const dateAddedMs = new Date(property.date_added);
-    const year = dateAddedMs.getFullYear();
-    const month = dateAddedMs.getUTCMonth();
-    const day = dateAddedMs.getDay();
-    return {
-      id: property.listing_id,
-      address: {},
-      price: property.price,
-      dateAdded: `${day}/${month}/${year}`,
-      propertyType: property.property_type,
-      country: "Spain",
-      beds: property.number_of_bedrooms,
-      bathrooms: property.number_of_bathrooms,
-      photos: 0
-    }
-  })
+  // const {data} = useGetAllPropertiesQuery()
+  // const propertiesFormatted = data?.map((property) => {
+  //   const dateAddedMs = new Date(property.date_added);
+  //   const year = dateAddedMs.getFullYear();
+  //   const month = dateAddedMs.getUTCMonth();
+  //   const day = dateAddedMs.getDay();
+  //   return {
+  //     id: property.listing_id,
+  //     address: {},
+  //     price: property.price,
+  //     dateAdded: `${day}/${month}/${year}`,
+  //     propertyType: property.property_type,
+  //     country: "Spain",
+  //     beds: property.number_of_bedrooms,
+  //     bathrooms: property.number_of_bathrooms,
+  //     photos: 0
+  //   }
+  // })
   const selectedPropertyId = useSelectedPropertyId();
   const { setSelectedPropertyId } = usePropertyStateDispatch();
   const [addProperty, setAddProperty] = useState<boolean>()
@@ -76,7 +76,7 @@ export const PropertySection: React.FC = () => {
       <VerticalSpacer />
       <PropertyGrid
         title="Properties"
-        rowData={propertiesFormatted ?? []}
+        rowData={[]}
         columnData={columns}
         onAddProperty={setAddProperty}
       />

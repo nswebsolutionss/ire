@@ -4,7 +4,7 @@ import Select from "react-select";
 import { useImageStateDispatch } from "../../client-dashboard/images-slice/useImageStateDispatch";
 import { useAllImages } from "../../client-dashboard/images-slice/useImageStateSelectors";
 import { useSelectedPropertyId } from "../../client-dashboard/property-slice/usePropertyStateSelectors";
-import { useGetPropertyQuery, useInsertPropertyMutation, useUpdatePropertyMutation } from "../../redux/api/apiSlice";
+// import { useGetPropertyQuery, useInsertPropertyMutation, useUpdatePropertyMutation } from "../../redux/api/apiSlice";
 import { Button, HorizontalSpacer, InputBox, Label, VerticalSpacer } from "../atoms/FormFields";
 import { NumberInput } from "../atoms/NumberInput";
 import { TextInput } from "../atoms/TextInput";
@@ -87,13 +87,14 @@ export const foo3 = {
 }
 export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClose }) => {
     const { deleteAllImages } = useImageStateDispatch();
-
+    const [property, setProperty] = useState<{number_of_bathrooms: number, number_of_bedrooms: number, price: string, property_type: string, property_description: string}>();
     const selectedPropertyId = useSelectedPropertyId();
+    const isLoading = false
 
-    const [insertProperty] = useInsertPropertyMutation()
-    const [updateProperty] = useUpdatePropertyMutation()
+    // const [insertProperty] = useInsertPropertyMutation()
+    // const [updateProperty] = useUpdatePropertyMutation()
     const [skip, setSkip] = useState<boolean>(true)
-    const {data: property, isLoading} = useGetPropertyQuery(selectedPropertyId ?? 0)
+    // const {data: property, isLoading} = useGetPropertyQuery(selectedPropertyId ?? 0)
 
     const images = useAllImages();
     //const [address, setAddress] = useState<Address>(selectedProperty?.address ?? defaultAddress)
@@ -126,26 +127,26 @@ export const PropertyDetailsForm: React.FC<EditPropertyFormProps> = ({ handleClo
         try {
             if(selectedPropertyId) {
                 console.log("we got here")
-                await updateProperty({
-                    listing_id: selectedPropertyId ?? 0,
-                    property_type: propertyType ?? "",
-                    number_of_bedrooms: noOfbedrooms ?? 0,
-                    number_of_bathrooms: noOfbathrooms ?? 0,
-                    property_description: description ?? "",
-                    price: price ?? "",
-                    date_added: property?.date_added ?? 0,
-                })
+                // await updateProperty({
+                //     listing_id: selectedPropertyId ?? 0,
+                //     property_type: propertyType ?? "",
+                //     number_of_bedrooms: noOfbedrooms ?? 0,
+                //     number_of_bathrooms: noOfbathrooms ?? 0,
+                //     property_description: description ?? "",
+                //     price: price ?? "",
+                //     date_added: property?.date_added ?? 0,
+                // })
             }
             else {
-                await insertProperty({
-                    listing_id:  Date.now(),
-                    property_type: propertyType ?? "",
-                    number_of_bedrooms: noOfbedrooms ?? 0,
-                    number_of_bathrooms: noOfbathrooms ?? 0,
-                    property_description: description ?? "",
-                    price: price ?? "",
-                    date_added: Date.now(),
-                })
+                // await insertProperty({
+                //     listing_id:  Date.now(),
+                //     property_type: propertyType ?? "",
+                //     number_of_bedrooms: noOfbedrooms ?? 0,
+                //     number_of_bathrooms: noOfbathrooms ?? 0,
+                //     property_description: description ?? "",
+                //     price: price ?? "",
+                //     date_added: Date.now(),
+                // })
             }
             
         } catch(err) {

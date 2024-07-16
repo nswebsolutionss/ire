@@ -10,8 +10,5 @@ export const store = configureStore({
         navigation: navigationReducer,
         images: imageReducer,
         user: userReducer,
-        [apiSlice.reducerPath]: apiSlice.reducer
-    },
-    middleware: getDefaultMiddleware =>
-        getDefaultMiddleware().concat(apiSlice.middleware)
+    }
 })

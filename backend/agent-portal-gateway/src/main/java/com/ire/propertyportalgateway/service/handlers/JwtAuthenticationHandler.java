@@ -1,6 +1,7 @@
-package com.ire.organizationplatform.service.handlers.authentication;
+package com.ire.propertyportalgateway.service.handlers;
 
-import com.ire.organizationplatform.service.ResponseHelper;
+import com.generated.organizationplatform.protocol.response.Response;
+import com.ire.propertyportalgateway.service.ResponseHelper;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.http.Cookie;
@@ -16,10 +17,10 @@ import java.util.Optional;
 public class JwtAuthenticationHandler implements Handler<RoutingContext> {
 
     private static final Logger LOGGER = LogManager.getLogger(JwtAuthenticationHandler.class);
+
     private final JWTAuth authProvider;
 
     public JwtAuthenticationHandler(JWTAuth authProvider) {
-
         this.authProvider = authProvider;
     }
 
@@ -27,7 +28,7 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
     public void handle(RoutingContext routingContext) {
         Optional<String> token = tokenIsValid(routingContext);
         if (token.isEmpty()) {
-            ResponseHelper.badRequest(routingContext, "Missing/Malformed JWT token");
+            ResponseHelper.unauthorised(routingContext, new Response("", "Missing JWT token"));
         } else {
             Future<User> authenticator = authProvider.authenticate(new TokenCredentials(token.get()));
             authenticator
@@ -35,10 +36,13 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
                             result ->
                             {
                                 LOGGER.error(result.getMessage());
-                                ResponseHelper.badRequest(routingContext, result.getMessage());
+                                ResponseHelper.unauthorised(routingContext, new Response("", result.getMessage()));
                             }
                     )
-                    .onSuccess(event1 -> routingContext.next());
+                    .onSuccess(
+                            event1 ->
+                                    routingContext.next()
+                    );
 
         }
     }
@@ -46,11 +50,11 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
     private static Optional<String> tokenIsValid(final RoutingContext routingContext) {
         try {
             Cookie token = routingContext.request().getCookie("Authorization");
+            routingContext.request().cookies().forEach(cookie -> LOGGER.info(cookie.getValue() + " " + cookie.isHttpOnly() + " " + cookie.getName()));
             return Optional.of(token.getValue());
         } catch (Exception e) {
             LOGGER.error(e);
             return Optional.empty();
         }
-
     }
 }

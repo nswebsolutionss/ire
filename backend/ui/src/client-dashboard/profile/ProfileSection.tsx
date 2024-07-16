@@ -7,7 +7,7 @@ import { ImageUploader } from "../../components/molecules/ImageUploader";
 import { OpeningTime } from "../../components/molecules/OpeningTime";
 import { useUser } from "../user-slice/useUserStateSelectors";
 import { S } from "vite/dist/node/types.d-AKzkD8vd";
-import { useGetCompanyInformationQuery } from "../../redux/api/apiSlice";
+// import { useGetCompanyInformationQuery } from "../../redux/api/apiSlice";
 import { useAuth } from "@clerk/clerk-react";
 
 export interface ProfileDetails {
@@ -23,7 +23,7 @@ export interface ProfileDetails {
 
 export const ProfileSection: React.FC = () => {
     const {orgId} = useAuth();
-    const {data: profileDetailsApi, isLoading} = useGetCompanyInformationQuery(orgId ?? "")
+    // const {data: profileDetailsApi, isLoading} = useGetCompanyInformationQuery(orgId ?? "")
 
     const user = useUser();
 
