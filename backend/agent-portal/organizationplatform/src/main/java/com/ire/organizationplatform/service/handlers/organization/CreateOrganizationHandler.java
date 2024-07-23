@@ -27,8 +27,9 @@ public class CreateOrganizationHandler implements ProcessingHandler<Organization
             final RoutingContext routingContext,
             final Organization request
     ) {
-        routingContext.vertx().executeBlocking(() ->
-                serviceInteraction.createOrganization(request), false
+        routingContext.vertx().executeBlocking(() -> {
+                    return serviceInteraction.createOrganization(request);
+                }
         ).onComplete(res -> {
                     if (res.succeeded()) {
                         if (res.result().isEmpty()) {

@@ -9,6 +9,9 @@ import { NavElement } from "../navigation-slice/navigationSlice";
 import { useNavigationStateDispatch } from "../navigation-slice/useNavigationStateDispatch";
 import { Element } from "./NavElement";
 import { SignedIn, UserButton } from "@clerk/clerk-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/atoms/FormFields";
 
 
 interface NavBarProps {
@@ -57,7 +60,27 @@ export const IconElement = styled.div`
 
 export const DashboardNavBar: React.FC<NavBarProps> = () => {
     const { setIsCollapsed } = useNavigationStateDispatch();
+    const navigate = useNavigate()
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true)
 
+    const logout = () => {
+        fetch('http://localhost:8084/logout', {
+            method: 'GET', 
+            mode: 'cors',
+            credentials: 'include'         
+            })
+        .then(response => {
+            const redirectUrl = response.headers.get("Location");
+            console.log(response)
+            navigate('/')
+        }).catch(err => {
+            setIsLoggedIn(false)
+            console.log(err)
+            navigate('/')
+
+        })
+    }
+    
     return (
         <div>
             <Container collapsed={useIsCollapsed()}>
@@ -83,7 +106,7 @@ export const DashboardNavBar: React.FC<NavBarProps> = () => {
                 <div style={{ width: "auto", height: "25px" }}></div>
                 <Element navElementEnum={NavElement.Settings} label="Settings" icon={IoSettingsOutline}></Element>
                 <Element navElementEnum={NavElement.Help} label="Help" icon={BsQuestionLg}></Element>
-                <Element navElementEnum={NavElement.SignOut} label="Sign Out" icon={BiLogOut}></Element>
+                <Element onClick={logout} navElementEnum={NavElement.SignOut} label="Sign Out" icon={BiLogOut}></Element>
             </Container>
         </div>
     )

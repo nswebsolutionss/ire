@@ -5,11 +5,12 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpServer;
-import io.vertx.ext.auth.JWTOptions;
+import io.vertx.ext.auth.PubSecKeyOptions;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.client.WebClient;
+import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.httpproxy.HttpProxy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,37 +19,32 @@ public class VertxWebApp extends AbstractVerticle {
     private static final Logger LOGGER = LogManager.getLogger();
     private final WebAppConfig config;
     private RouteConsumer routerConsumer;
-    private final JWTAuth authProvider = JWTAuth.create(
-            vertx,
-            new JWTAuthOptions()
-                    .setJWTOptions(
-                            new JWTOptions().setExpiresInSeconds(86400)
-                    )
-    );
-    private WebClient httpClient;
+    private final JWTAuth authProvider;
 
     public VertxWebApp(final WebAppConfig config) {
         this.config = config;
+        this.authProvider = JWTAuth.create(
+                vertx,
+                new JWTAuthOptions().addPubSecKey(
+                        new PubSecKeyOptions().setBuffer(config.privateKey()).setAlgorithm(config.privateKeyAlg())
+                )
+        );
     }
 
     @Override
     public void start(Promise<Void> startPromise) {
-        httpClient = WebClient.create(vertx);
+        HttpOutboundMessagePublisher httpOutboundMessagePublisher = new HttpOutboundMessagePublisher(WebClient.create(vertx, new WebClientOptions().setLogActivity(true)));
         Router proxyRouter = Router.router(vertx);
 
         if (routerConsumer == null) {
             throw new RuntimeException("Expected router consumer to not be null");
         }
-
-//        proxyRouter.route("/api/*").handler(
-//                new JwtAuthenticationHandler(authProvider)
-//        );
         startHttpsServer(startPromise, proxyRouter);
 
         HttpClient proxyClient = vertx.createHttpClient();
         HttpProxy httpProxy = HttpProxy.reverseProxy(proxyClient);
-        httpProxy.origin(443, "https://108.156.46.42");
-        routerConsumer.accept(proxyRouter, httpProxy, httpClient);
+        httpProxy.origin(443, "http://localhost:8082");
+        routerConsumer.accept(proxyRouter, httpProxy, httpOutboundMessagePublisher, authProvider);
 
     }
 
@@ -76,6 +72,6 @@ public class VertxWebApp extends AbstractVerticle {
 
     @FunctionalInterface
     public interface RouteConsumer {
-        void accept(Router router, HttpProxy httpProxy, WebClient client);
+        void accept(Router router, HttpProxy httpProxy, HttpOutboundMessagePublisher client, JWTAuth authProvider);
     }
 }

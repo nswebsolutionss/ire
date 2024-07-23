@@ -18,11 +18,9 @@ export const DashboardPage = () => {
 
     return (
         <>
-            {hasOrg ?
-                <>
+
                     <Dashboard />
-                </>
-                : <CreateOrganization />}
+
         </>
     )
 }

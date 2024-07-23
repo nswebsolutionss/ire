@@ -58,7 +58,7 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
 
         dataSource.getConnection().prepareStatement(new String(new DatabaseWrapperConfig().setupScript.readAllBytes())).execute();
 
-        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"), dataSource);
+        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0", WebAppConfig.PUBLIC_KEY, "RS256"), dataSource);
         vertx.deployVerticle(vertxWebApp, new DeploymentOptions().setWorkerPoolSize(1));
     }
 

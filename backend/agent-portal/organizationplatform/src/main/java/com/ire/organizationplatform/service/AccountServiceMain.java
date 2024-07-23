@@ -40,7 +40,7 @@ public class AccountServiceMain {
 
     public static void main(String[] args) {
 
-        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"), DataSourceFactory.ownerDataSource());
+        VertxWebApp vertxWebApp = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0", WebAppConfig.PUBLIC_KEY, "RS256"), DataSourceFactory.ownerDataSource());
         Vertx vertx = Vertx.vertx(new VertxOptions().setWorkerPoolSize(32));
         vertx.deployVerticle(vertxWebApp);
     }

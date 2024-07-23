@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class WebUserDsl {
 
-    private static final String DEFAULT_USER = "user";
+    private static final String DEFAULT_USER = "default-user-session";
 
     private final Map<String, RestApi> httpUsersBySession = new HashMap<>();
     private final List<String> ignoredResolvers = new ArrayList<>();

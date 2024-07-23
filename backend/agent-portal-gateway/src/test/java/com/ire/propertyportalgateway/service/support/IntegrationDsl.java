@@ -1,8 +1,7 @@
 package com.ire.propertyportalgateway.service.support;
 
-import com.ire.organizationplatform.service.AccountServiceMain;
 import com.ire.propertyportalgateway.service.AgentPropertyPortalGatewayMain;
-import com.ire.webapp.VertxWebApp;
+import com.ire.propertyportalgateway.service.VertxWebApp;
 import com.ire.webapp.WebAppConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.DeploymentOptions;
@@ -12,6 +11,8 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -44,12 +45,9 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
-        VertxWebApp accountService = AccountServiceMain.newVertxWebApp(new WebAppConfig(8082, "0.0.0.0"), null);
-        vertx.deployVerticle(accountService, new DeploymentOptions().setWorkerPoolSize(1));
-
-        com.ire.propertyportalgateway.service.VertxWebApp propertyPortalGateway = AgentPropertyPortalGatewayMain.newVertxWebApp(new WebAppConfig(8084, "0.0.0.0"));
-        vertx.deployVerticle(propertyPortalGateway, new DeploymentOptions().setWorkerPoolSize(1));
+    public void beforeEach(ExtensionContext extensionContext) throws IOException, SQLException {
+        VertxWebApp vertxWebApp = AgentPropertyPortalGatewayMain.newVertxWebApp(new WebAppConfig(8084, "0.0.0.0", WebAppConfig.TEST_KEY, "HS256"));
+        vertx.deployVerticle(vertxWebApp, new DeploymentOptions().setWorkerPoolSize(1));
     }
 
     @Override

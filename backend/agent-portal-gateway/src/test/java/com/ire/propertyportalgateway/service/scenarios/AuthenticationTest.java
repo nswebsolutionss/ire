@@ -1,6 +1,6 @@
 package com.ire.propertyportalgateway.service.scenarios;
 
-import com.ire.propertyportalgateway.service.fixtures.OrganizationInformationFixture;
+import com.ire.propertyportalgateway.service.fixtures.AuthenticationFixture;
 import com.ire.propertyportalgateway.service.support.IntegrationDsl;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,19 +14,59 @@ public class AuthenticationTest {
     private final IntegrationDsl dsl = IntegrationDsl.newDslIgnoringIds();
 
     @Test
-    public void shouldNotCreateOrganizationInformationIfNoJWTPresentOnRequest() {
-        OrganizationInformationFixture fixture = new OrganizationInformationFixture();
+    public void shouldSendUnauthenticatedIfAccessTokenIsEmpty() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
 
-        dsl.webUser().when().httpUser().sends(fixture.createOrganizationInformationRequest().withoutAuth());
-        dsl.webUser().then().httpUser().receives(fixture.unauthorisedResponse("Missing JWT token"));
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedEmptyToken());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
     }
 
     @Test
-    public void shouldCreateOrganizationInformationIfJWTIsPresentAndValid() {
-        OrganizationInformationFixture fixture = new OrganizationInformationFixture();
+    public void shouldSendUnauthenticatedIfAccessTokenInvalid() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
 
-        dsl.webUser().when().httpUser().sends(fixture.createOrganizationInformationRequest());
-        dsl.webUser().then().httpUser().receives(fixture.successResponse("Successfully created Organization Information"));
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedMalformedToken());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+    }
+
+    @Test
+    public void shouldSendUnauthenticatedIfAccessTokenNotSigned() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
+
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedNonSignedToken());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+    }
+
+    @Test
+    public void shouldSendUnauthenticatedIfAccessTokenSignedWithWrongKey() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
+
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenSignedWithWrongKey());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+    }
+
+    @Test
+    public void shouldSendUnauthenticatedIfAccessTokenHasBeenManipulated() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
+
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenManipulated());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+    }
+
+    @Test
+    public void shouldSendUnauthenticatedIfAccessTokenHasExpiredAndNoRefreshTokenPresent() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
+
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenExpired());
+        dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+    }
+
+    @Test
+    public void shouldSend200IfAccessTokenIsValid() {
+        AuthenticationFixture fixture = new AuthenticationFixture();
+
+        dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedValidToken());
+        dsl.webUser().then().httpUser().receives(fixture.authenticateResponse());
     }
 
 }

@@ -13,25 +13,12 @@ public class RequestMessage {
     private final String host;
     private final int port;
     private final Map<String, String> queryParams = new HashMap<>();
-    private Map<String, String> headers = new HashMap<>();
+    private final Map<String, String> headers = new HashMap<>();
     private final Object payload;
     private final ContentType contentType;
+    //    private final String jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjIwNzI4Mzk5OTJ9";
+    private final String jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MTk5MDk4MDd9.ujBHkL_7_h1uWymOakbSRSLvbCDIFZWftnZk4vAM9vWUms_fblTDvbRwlXCHglAH6MoSWd3FVp7luLapRsUriCUD2q9aavFQ5ScQBhM3-d_g6gXzNhwYD1elKksiBC0go2SPkeSY2RjifqNrkakFTno0XocK-EdblhNrF9NBgLmz4blCfOk8ZHj028Ul1MueNw7cPcGwGzwIKJi2Dr6qQ2bXvZ4YLEHIXddy6HT3eDxyUbJHLOec4Ddsp0G5LALa624I-P86yrUELkr3hqM4x3y2Z1k4d3vZzEEcNNqJHclFKupteL_kyLW6oe5vqaS0Qo1PIj8fV7fPZLTwhBCPMw";
 
-    public RequestMessage(
-            final HttpMethod method,
-            final String uri,
-            final String host,
-            final int port,
-            final Object payload,
-            final ContentType contentType
-    ) {
-        this.method = method;
-        this.uri = uri;
-        this.host = host;
-        this.port = port;
-        this.payload = payload;
-        this.contentType = contentType;
-    }
 
     public RequestMessage(
             final HttpMethod method,
@@ -48,7 +35,24 @@ public class RequestMessage {
         this.port = port;
         this.payload = payload;
         this.contentType = contentType;
-        this.headers = headers;
+        this.headers.putAll(headers);
+    }
+
+    public RequestMessage(
+            final HttpMethod method,
+            final String uri,
+            final String host,
+            final int port,
+            final Object payload,
+            final ContentType contentType
+    ) {
+        this.method = method;
+        this.uri = uri;
+        this.host = host;
+        this.port = port;
+        this.payload = payload;
+        this.contentType = contentType;
+        this.headers.put("access_token", jwt);
     }
 
     public String uri() {

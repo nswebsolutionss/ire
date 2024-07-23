@@ -32,15 +32,15 @@ import static io.vertx.core.buffer.Buffer.buffer;
 public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final List<RequestMessage> sentMessages = new ArrayList<RequestMessage>();
+    private final List<RequestMessage> sentMessages = new ArrayList<>();
     private final List<CompletableFuture<HttpResponse<Buffer>>> pendingRequestList = new ArrayList<CompletableFuture<HttpResponse<Buffer>>>();
-    private final List<HttpResponse<Buffer>> responses = new ArrayList<HttpResponse<Buffer>>();
+    private final List<HttpResponse<Buffer>> responses = new ArrayList<>();
     private final Vertx vertx;
     private final WebClient client;
     private CompletableFuture<HttpResponse<Buffer>> future = new CompletableFuture<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final List<String> ignoredResolvers = new ArrayList<>();
-    public static final List<String> idsSeen = new ArrayList<>();
+    public final static SupplemntaryData supplementaryData = new SupplemntaryData();
 
     public RestApi(List<String> ignoredResolvers) {
         this.vertx = Vertx.vertx();
@@ -53,6 +53,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     public void sends(final MessageToSend request) {
         RequestMessage messageToSend = request.toMessage();
         sentMessages.add(messageToSend);
+        supplementaryData.addSentMessage(messageToSend);
         pendingRequestList.add(
                 execAsync(messageToSend)
         );
@@ -63,6 +64,10 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         HttpRequest<Buffer> httpRequest = client.requestAbs(request.method(), "http://" + request.host() + ":" + request.port() + "/" + request.uri());
         try {
             if (!request.headers().isEmpty()) {
+                if (request.headers().containsKey("access_token")) {
+                    String accessToken = request.headers().remove("access_token");
+                    httpRequest.putHeader("Cookie", "access_token=" + accessToken);
+                }
                 request.headers().forEach(httpRequest::putHeader);
             }
             if (!request.queryParams().isEmpty()) {
@@ -105,8 +110,8 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private void waitForResponseAndAssert(ResponseMessage expected) {
 
         Awaitility.await(Thread.currentThread().getName())
-                .timeout(10, TimeUnit.SECONDS)
-                .pollInterval(1, TimeUnit.SECONDS)
+                .timeout(2, TimeUnit.SECONDS)
+                .pollInterval(5, TimeUnit.MILLISECONDS)
                 .untilAsserted(
                         () -> {
 
@@ -123,17 +128,23 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                             LOGGER.info("----------------------------------------------------------------------------");
                             Assertions.assertEquals(expected.statusCode, actualResponse.statusCode);
 
-                            String actualEncoded = Json.encode(actualResponse.contentBody);
-                            String expectedEncoded = Json.encode(expected.contentBody);
+                            if (actualResponse.contentBody != null || expected.contentBody != null) {
+                                String actualEncoded = Json.encode(actualResponse.contentBody);
+                                String expectedEncoded = Json.encode(expected.contentBody);
 
-                            JSONObject expectedJson = new JSONObject(expectedEncoded);
-                            JSONObject actualJson = new JSONObject(actualEncoded);
+                                JSONObject expectedJson = new JSONObject(expectedEncoded);
+                                JSONObject actualJson = new JSONObject(actualEncoded);
 
-                            assertResponseBody(expectedJson, actualJson);
+                                assertResponseBody(expectedJson, actualJson);
+                            }
+
 
                             Assertions.assertEquals(expected.contentType, actualResponse.contentType);
                             Assertions.assertEquals(expected.headers, actualResponse.headers);
                             responses.remove(0);
+                            if (actualResponse.contentBody != null) {
+                                supplementaryData.addReceivedMessage(new JSONObject(Json.encode(actualResponse.contentBody)));
+                            }
                         }
                 );
     }
@@ -142,7 +153,6 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         expected.keys().forEachRemaining(key -> {
             if (ignoredResolvers.contains(key)) {
                 Assertions.assertTrue(actual.has(key));
-                idsSeen.add((String) actual.get(key));
                 return;
             }
             if (actual.get(key) instanceof JSONObject) {
@@ -215,6 +225,23 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
             }
         } catch (final Exception e) {
             future.completeExceptionally(e);
+        }
+    }
+
+    public static class SupplemntaryData {
+        private final List<RequestMessage> sentMessages = new ArrayList<>();
+        private final List<JSONObject> receivedMessages = new ArrayList<>();
+
+        public void addSentMessage(final RequestMessage messageToSend) {
+            sentMessages.add(messageToSend);
+        }
+
+        public void addReceivedMessage(final JSONObject received) {
+            receivedMessages.add(received);
+        }
+
+        public JSONObject getLastReceivedMessage() {
+            return receivedMessages.getLast();
         }
     }
 }

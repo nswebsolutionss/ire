@@ -59,12 +59,25 @@ public class ResponseHelper {
     public static void unauthorised(RoutingContext routingContext, Object body) {
         Buffer buffer = new BufferImpl();
         String encodedBody = Json.encode(body);
-        LOGGER.error(encodedBody);
         buffer.appendString(encodedBody);
         HttpServerResponse response = routingContext.response();
         response.putHeader("Content-type", "application/json");
         response.putHeader("Content-length", String.valueOf(buffer.length()));
         response.setStatusCode(401);
+        response.write(buffer);
+        response.end();
+    }
+
+    public static void redirect(RoutingContext routingContext, Object body, String location) {
+        Buffer buffer = new BufferImpl();
+        String encodedBody = Json.encode(body);
+        LOGGER.error(encodedBody);
+        buffer.appendString(encodedBody);
+        HttpServerResponse response = routingContext.response();
+        response.putHeader("Content-type", "application/json");
+        response.putHeader("Content-length", String.valueOf(buffer.length()));
+        response.putHeader("Location", location);
+        response.setStatusCode(302);
         response.write(buffer);
         response.end();
     }

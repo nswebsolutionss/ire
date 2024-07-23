@@ -6,6 +6,7 @@ import { NavElement } from "../navigation-slice/navigationSlice";
 import { useNavigationStateDispatch } from "../navigation-slice/useNavigationStateDispatch";
 
 interface ElementProps {
+    onClick?: () => void;
     label: string;
     icon?: IconType;
     navElementEnum: NavElement;
@@ -38,14 +39,19 @@ export const Container = styled.div<ContainerProps>`
 
 
 
-export const Element: React.FC<ElementProps> = ({ label, icon, navElementEnum}) => {
+export const Element: React.FC<ElementProps> = ({ label, icon, navElementEnum, onClick}) => {
     const {setSelectedNavElement} = useNavigationStateDispatch();
     const isSelected = useSelectedNavElement() === navElementEnum;
 
 
     return (
         useIsCollapsed() === false ?
-            <Container active={isSelected} onClick={() => setSelectedNavElement(navElementEnum)}>
+            <Container active={isSelected} onClick={() => {
+                setSelectedNavElement(navElementEnum)
+                if(onClick) {
+                    onClick();
+                }
+                }}>
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center", width: "100%" }}>
                     {
                         icon !== undefined ? React.createElement(icon, { size: 25 }) : ""
@@ -55,7 +61,12 @@ export const Element: React.FC<ElementProps> = ({ label, icon, navElementEnum}) 
                 </div>
             </Container >
             : 
-            <Container data-tooltip-id={label} data-tooltip-content={label} active={isSelected} onClick={() => setSelectedNavElement(navElementEnum)}>
+            <Container data-tooltip-id={label} data-tooltip-content={label} active={isSelected} onClick={() => {
+                setSelectedNavElement(navElementEnum)
+                if(onClick) {
+                    onClick();
+                }
+                }}>
                 <div style={{ display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center", width: "100%" }}>
                     {
                         icon !== undefined ? React.createElement(icon, { size: 25 }) : <></>

@@ -31,14 +31,8 @@ public class JwtAuthenticationHandler implements Handler<RoutingContext> {
         } else {
             Future<User> authenticator = authProvider.authenticate(new TokenCredentials(token.get()));
             authenticator
-                    .onFailure(
-                            result ->
-                            {
-                                LOGGER.error(result.getMessage());
-                                ResponseHelper.badRequest(routingContext, result.getMessage());
-                            }
-                    )
-                    .onSuccess(event1 -> routingContext.next());
+                    .onFailure(result -> ResponseHelper.badRequest(routingContext, result.getMessage()))
+                    .onSuccess(res -> routingContext.next());
 
         }
     }
