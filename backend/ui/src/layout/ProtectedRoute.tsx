@@ -4,8 +4,6 @@ import { Outlet, redirect, useNavigate } from "react-router-dom"
 import { LoadingSpinner } from "../components/atoms/LoadingSpinner"
 
 export default function ProtectedRoute() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-  const { isSignedIn, isLoaded } = useUser()
   const navigate = useNavigate()
   useMemo(() => {
     fetch('http://localhost:8084/api/authenticated', {
@@ -14,14 +12,8 @@ export default function ProtectedRoute() {
       mode: 'cors'                    
       })
   .then(response => {
-      if(response.ok) {
-        setIsLoggedIn(true)
-      }
-      else {
-        setIsLoggedIn(false)
-      }
+      
   }).catch(err => {
-    setIsLoggedIn(false)
     fetch('http://localhost:8084/login', {
       method: 'GET', 
        mode: 'cors'                    
@@ -35,11 +27,11 @@ export default function ProtectedRoute() {
   })
   })
 
-  }, [isLoggedIn])
+  }, [])
 
   return (
     <>
-      {!isLoggedIn ? <LoadingSpinner /> : <Outlet />}
+      <Outlet />
     </>
   )
 

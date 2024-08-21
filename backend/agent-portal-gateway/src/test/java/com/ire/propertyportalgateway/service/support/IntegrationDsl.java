@@ -22,10 +22,14 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
     private final Vertx vertx = Vertx.vertx();
     private final DslWrapper<WebUserDsl> webUserDslWrapper;
     private final List<String> ignoredResolvers = new ArrayList<>();
+    private final DslWrapper<StubAlerts> alertsDsl;
+    private final StubAlerts alerts;
 
     public IntegrationDsl(final List<String> ignoredResolvers) {
         this.ignoredResolvers.addAll(ignoredResolvers);
         this.webUserDslWrapper = new DslWrapper<>(new WebUserDsl(ignoredResolvers));
+        this.alerts = new StubAlerts();
+        this.alertsDsl = new DslWrapper<>(alerts);
     }
 
     public static IntegrationDsl newDsl() {
@@ -33,7 +37,7 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
     }
 
     public static IntegrationDsl newDslIgnoringIds() {
-        return newDsl(List.of("id"));
+        return newDsl(List.of("id", "Location"));
     }
 
     public static IntegrationDsl newDsl(List<String> ignoredResolvers) {
@@ -46,7 +50,10 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws IOException, SQLException {
-        VertxWebApp vertxWebApp = AgentPropertyPortalGatewayMain.newVertxWebApp(new WebAppConfig(8084, "0.0.0.0", WebAppConfig.TEST_KEY, "HS256"));
+        VertxWebApp vertxWebApp = AgentPropertyPortalGatewayMain.newVertxWebApp(
+                new WebAppConfig(8084, "0.0.0.0", WebAppConfig.TEST_KEY, "HS256"),
+                (__) -> new HttpPublisherStub(), alerts
+        );
         vertx.deployVerticle(vertxWebApp, new DeploymentOptions().setWorkerPoolSize(1));
     }
 
@@ -63,4 +70,9 @@ public class IntegrationDsl implements BeforeEachCallback, AfterEachCallback {
             }
         });
     }
+
+    public DslWrapper<StubAlerts> alerts() {
+        return this.alertsDsl;
+    }
+
 }

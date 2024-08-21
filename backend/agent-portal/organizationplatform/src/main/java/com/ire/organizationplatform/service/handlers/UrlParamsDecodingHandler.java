@@ -33,7 +33,7 @@ public class UrlParamsDecodingHandler<T extends RequestInterface> implements Han
             handler.handle(routingContext, request);
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException |
                  IllegalAccessException e) {
-            LOGGER.error("Failed to decode url params: " + e);
+            LOGGER.error("Failed to decode url params: ", e);
             ResponseHelper.badRequest(routingContext, new Response("", "Failed to process request"));
         }
     }

@@ -48,7 +48,7 @@ public class AccountServiceMain {
     private static void routes(VertxWebApp vertxWebApp, AccountServiceInteraction serviceInteraction) {
         vertxWebApp.withRoutes(
                 (router, jwtAuth) -> {
-                    router.route().handler(CorsHandler.create().addOrigins(List.of("http://localhost:3000", "http://localhost:8082"))
+                    router.route().handler(CorsHandler.create().addOrigins(List.of("http://localhost:8082"))
                             .allowedMethods(Set.of(HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.GET, HttpMethod.POST))
                             .allowedHeader("Access-Control-Allow-Credentials")
                             .allowedHeader("Access-Control-Allow-Origin")

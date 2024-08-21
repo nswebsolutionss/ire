@@ -1,27 +1,37 @@
 package com.ire.propertyportalgateway.service.handlers;
 
+import com.ire.propertyportalgateway.service.alerts.Alerts;
 import com.ire.propertyportalgateway.service.authentication.AuthWorkflow;
 import io.vertx.core.Handler;
 import io.vertx.core.shareddata.LocalMap;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static com.ire.propertyportalgateway.service.shared.Constants.AUTH_WORKFLOW_VERTX_KEY;
 
 public class AuthorizationCallbackHandler implements Handler<RoutingContext> {
-    private static final Logger LOGGER = LogManager.getLogger();
 
-    public AuthorizationCallbackHandler() {
+    private final Alerts alerts;
+
+    public AuthorizationCallbackHandler(final Alerts alerts) {
+        this.alerts = alerts;
     }
 
     @Override
-    public void handle(RoutingContext routingContext) {
-        String state = routingContext.request().getParam("state");
-        LocalMap<String, AuthWorkflow> authWorkflow = routingContext.vertx().sharedData().getLocalMap("authWorkflow");
-        if (authWorkflow.get(state) == null) {
+    public void handle(final RoutingContext routingContext) {
+        final String state = routingContext.request().getParam("state");
+        final LocalMap<String, AuthWorkflow> authWorkflow = routingContext.vertx().sharedData().getLocalMap(AUTH_WORKFLOW_VERTX_KEY);
+        try {
+            if (authWorkflow.get(state) == null) {
+                alerts.raiseAlert("OAuth Workflow broken - state does not match, be aware of man in the middle attack");
+                routingContext.reroute("/login");
+            } else {
+                authWorkflow.remove(state).onLoggedOn(state, routingContext);
+            }
+        } catch (final Exception exception) {
+            alerts.raiseAlert("Caught exception on callback request: ", exception);
             routingContext.reroute("/login");
-        } else {
-            authWorkflow.remove(state).onLoggedOn(state, routingContext);
         }
+
 
     }
 }

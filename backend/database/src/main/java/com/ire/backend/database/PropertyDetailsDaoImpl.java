@@ -35,7 +35,7 @@ public class PropertyDetailsDaoImpl implements PropertyDetailsDao {
         try {
             connection = dataSource.getConnection();
         } catch (SQLException e) {
-            LOGGER.error("Received exception when attempting to get dataSource connection: " + e);
+            LOGGER.error("Received exception when attempting to get dataSource connection: ", e);
             throw new RuntimeException(e);
         }
         return connection;

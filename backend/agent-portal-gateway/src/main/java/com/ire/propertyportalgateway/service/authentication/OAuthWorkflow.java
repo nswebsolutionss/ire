@@ -1,10 +1,11 @@
 package com.ire.propertyportalgateway.service.authentication;
 
 import com.generated.organizationplatform.protocol.response.Response;
-import com.ire.propertyportalgateway.service.HttpOutboundMessagePublisher;
+import com.ire.propertyportalgateway.service.HttpPublisher;
 import com.ire.propertyportalgateway.service.HttpRequestMessage;
 import com.ire.propertyportalgateway.service.ResponseHelper;
 import com.ire.propertyportalgateway.service.UserInformation;
+import com.ire.propertyportalgateway.service.alerts.Alerts;
 import com.ire.webapp.WebAppConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.MultiMap;
@@ -25,14 +26,16 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final HttpOutboundMessagePublisher httpOutboundMessagePublisher;
+    private final HttpPublisher httpOutboundMessagePublisher;
+    private final Alerts alerts;
     private final WebAppConfig webAppConfig;
     private final long id;
 
-    public OAuthWorkflow(final long id, WebAppConfig webAppConfig, HttpOutboundMessagePublisher httpOutboundMessagePublisher) {
+    public OAuthWorkflow(final long id, WebAppConfig webAppConfig, HttpPublisher httpOutboundMessagePublisher, Alerts alerts) {
         this.id = id;
         this.webAppConfig = webAppConfig;
         this.httpOutboundMessagePublisher = httpOutboundMessagePublisher;
+        this.alerts = alerts;
     }
 
     @Override
@@ -44,14 +47,10 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
     public void initiateWorkflow(final RoutingContext routingContext) {
         routingContext.response()
                 .putHeader("Access-Control-Expose-Headers", "*")
-                .putHeader("Location", webAppConfig.getPropelAuthAuthorizationEndpoint() + "?" +
-                        "redirect_uri=" + webAppConfig.getPropelAuthRedirectUrl() +
-                        "&client_id=" + webAppConfig.getPropelAuthClientId() +
-                        "&response_type=code" +
-                        "&state=" + id
-                ).setStatusCode(200).end()
+                .putHeader("Location", formatOAuthRequestHeader(webAppConfig, id))
+                .setStatusCode(200).end()
                 .onFailure(res -> {
-                    LOGGER.error("Failed to logon: " + res);
+                    alerts.raiseAlert("Failed to logon: ", res);
                     routingContext.response().setStatusCode(500).setStatusMessage("Internal Server Error").end();
                 })
                 .onSuccess(res -> {
@@ -59,27 +58,28 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
 
     }
 
+
     @Override
     public void onLoggedOn(String state, final RoutingContext routingContext) {
         String code = routingContext.request().getParam("code");
         if (!state.equals(String.valueOf(id))) {
-            LOGGER.error("Received state does not much originator state: Received: " + code + " Actual: " + id);
+            alerts.raiseAlert("Received state does not much originator state: Received: " + code + " Actual: " + id);
             routingContext.response().setStatusMessage("Bad request").setStatusCode(400).end();
         } else {
-            httpOutboundMessagePublisher.publish(createAuthorizationEndpointResponse(code, webAppConfig), (res) -> onToken(res, routingContext));
+            HttpRequestMessage authorizationEndpointResponse = createAuthorizationEndpointResponse(code, webAppConfig);
+            httpOutboundMessagePublisher.publish(authorizationEndpointResponse, (res) -> onToken(res, routingContext));
+
         }
 
     }
 
     private void onToken(final AsyncResult<HttpResponse<Buffer>> res, final RoutingContext routingContext) {
-        LOGGER.info("Issuing tokens");
         if (res.succeeded()) {
             if (res.result().statusCode() != 200) {
-                LOGGER.error("Unable to exchange code for token: {}", res.result().statusMessage());
+                alerts.raiseAlert("Unable to exchange code for token: {}", res.cause());
                 routingContext.response().setStatusMessage(res.result().statusMessage()).setStatusCode(res.result().statusCode()).end();
             } else {
-                UserInformation user = UserInformation.parseToken(res.result().bodyAsString());
-                LOGGER.info(user);
+                UserInformation user = UserInformation.parseToken(res.result().bodyAsString(), alerts);
                 if (user == null) {
                     routingContext.response().setStatusMessage("Unable to get user information from token").setStatusCode(500).end();
                 } else {
@@ -91,14 +91,14 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
                                     .withJsonBody(new JsonObject().put("id", user.getOrganizationId())),
                             (foo) -> {
                                 HttpServerResponse httpServerResponse = addAuthCookies(res, routingContext);
-                                httpServerResponse.headers().add("Location", "http://localhost:5174/dashboard");
+                                httpServerResponse.headers().add("Location", "http://localhost:5173/dashboard");
                                 httpServerResponse.setStatusCode(302);
                                 httpServerResponse.end();
                             });
                 }
             }
         } else {
-            LOGGER.error(res.result());
+            alerts.raiseAlert("Exception: ", res.cause());
             ResponseHelper.unauthorised(routingContext, new Response("", "Logon flow failed"));
         }
 
@@ -138,9 +138,17 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
                 );
     }
 
+    private static String formatOAuthRequestHeader(final WebAppConfig webAppConfig, final Long id) {
+        return webAppConfig.getPropelAuthAuthorizationEndpoint() + "?" +
+                "redirect_uri=" + webAppConfig.getPropelAuthRedirectUrl() +
+                "&client_id=" + webAppConfig.getPropelAuthClientId() +
+                "&response_type=code" +
+                "&state=" + id;
+    }
+
     @Override
     public Shareable copy() {
-        return new OAuthWorkflow(this.id, this.webAppConfig, httpOutboundMessagePublisher);
+        return new OAuthWorkflow(this.id, this.webAppConfig, httpOutboundMessagePublisher, alerts);
     }
 
 }

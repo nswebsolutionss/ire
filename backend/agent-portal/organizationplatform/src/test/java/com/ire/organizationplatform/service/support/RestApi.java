@@ -197,7 +197,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                     responses.add(bufferHttpResponse);
                     return bufferHttpResponse;
                 } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                    LOGGER.error("Failed to response pending http request in {} {}", 10, "s");
+                    LOGGER.error("Failed to response pending http request in {} {}", 10, "s", e);
                 }
             }
 

@@ -19,6 +19,7 @@ public class AuthenticationTest {
 
         dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedEmptyToken());
         dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+
     }
 
     @Test
@@ -43,6 +44,8 @@ public class AuthenticationTest {
 
         dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenSignedWithWrongKey());
         dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+        dsl.alerts().and().expectAlertContaining("Signature verification failed");
+
     }
 
     @Test
@@ -51,6 +54,7 @@ public class AuthenticationTest {
 
         dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenManipulated());
         dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+        dsl.alerts().and().expectAlertContaining("Signature verification failed");
     }
 
     @Test
@@ -59,6 +63,8 @@ public class AuthenticationTest {
 
         dsl.webUser().when().httpUser().sends(fixture.checkAuthenticatedTokenExpired());
         dsl.webUser().then().httpUser().receives(fixture.unauthenticatedResponse("Unauthenticated"));
+        dsl.alerts().and().expectAlertContaining("Invalid JWT token: token expired");
+
     }
 
     @Test

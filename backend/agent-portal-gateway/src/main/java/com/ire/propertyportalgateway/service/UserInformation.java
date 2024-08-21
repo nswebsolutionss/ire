@@ -1,5 +1,6 @@
 package com.ire.propertyportalgateway.service;
 
+import com.ire.propertyportalgateway.service.alerts.Alerts;
 import io.vertx.core.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class UserInformation {
+public final class UserInformation {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final String userId;
@@ -24,28 +25,28 @@ public class UserInformation {
         this.userRole = userRole;
     }
 
-    public static UserInformation parseToken(String token) {
-
+    public static UserInformation parseToken(String token, Alerts alerts) {
         // Split token by . to get body
-        String[] tokenParts = token.split("\\.");
+        final String[] tokenParts = token.split("\\.");
 
         // Base64 decode
-        JsonObject jwtBody = new JsonObject((new String(Base64.getDecoder().decode(tokenParts[1]), StandardCharsets.UTF_8)));
+        final JsonObject jwtBody = new JsonObject((new String(Base64.getDecoder().decode(tokenParts[1]), StandardCharsets.UTF_8)));
 
-        String userId = jwtBody.getString("user_id");
-        String email_address = jwtBody.getString("email");
+        final String userId = jwtBody.getString("user_id");
+        final String email_address = jwtBody.getString("email");
 
         String organizationId = null;
         String organizationName = null;
         String userRole = null;
-        JsonObject organizationIdByOrgMemberInfoGroup = jwtBody.getJsonObject("org_id_to_org_member_info");
+
+        final JsonObject organizationIdByOrgMemberInfoGroup = jwtBody.getJsonObject("org_id_to_org_member_info");
         if (organizationIdByOrgMemberInfoGroup.stream().findFirst().isPresent()) {
             organizationId = organizationIdByOrgMemberInfoGroup.stream().findFirst().get().getKey();
             JsonObject organizationGroup = organizationIdByOrgMemberInfoGroup.getJsonObject(organizationId);
             organizationName = organizationGroup.getString("org_name");
             userRole = organizationGroup.getString("user_role");
         } else {
-            LOGGER.error("Unable to parse token into user object: \n" +
+            alerts.raiseAlert("Unable to parse token into user object: \n" +
                     "organizationId: " + organizationId + "\n" +
                     "organizationName: " + organizationName + "\n" +
                     "userRole: " + userRole

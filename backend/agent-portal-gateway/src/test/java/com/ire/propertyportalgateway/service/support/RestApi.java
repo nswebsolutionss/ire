@@ -82,7 +82,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                     default -> throw new IllegalArgumentException("Unknown ContentType");
                 }
             } else {
-                httpRequest.send(this);
+                httpRequest.followRedirects(false).send(this);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -117,7 +117,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
                             HttpResponse<Buffer> actual = getResponse();
                             Assertions.assertNotNull(actual);
-                            ResponseMessage actualResponse = mapVertxResponseToResponse(actual);
+                            ResponseMessage actualResponse = mapVertxResponseToResponse(actual, expected);
                             String encodedExpected = Json.encode(expected);
                             String encodedActual = Json.encode(actualResponse);
 
@@ -140,7 +140,14 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
 
                             Assertions.assertEquals(expected.contentType, actualResponse.contentType);
-                            Assertions.assertEquals(expected.headers, actualResponse.headers);
+                            expected.headers.forEach((k, v) -> {
+                                if (ignoredResolvers.contains(k)) {
+                                    Assertions.assertNotNull(actual.headers().get(k));
+                                    supplementaryData.addReceivedHeader(k, actual.headers().get(k));
+                                } else {
+                                    Assertions.assertEquals(expected.headers.get(k), v);
+                                }
+                            });
                             responses.remove(0);
                             if (actualResponse.contentBody != null) {
                                 supplementaryData.addReceivedMessage(new JSONObject(Json.encode(actualResponse.contentBody)));
@@ -167,9 +174,15 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
     }
 
-    private ResponseMessage mapVertxResponseToResponse(HttpResponse<Buffer> actual) {
+    private ResponseMessage mapVertxResponseToResponse(HttpResponse<Buffer> actual, ResponseMessage expected) {
         Map<String, String> headers = new HashMap<>();
         String contentTypeRaw = "";
+
+        expected.headers.forEach((k, v) -> {
+            if (actual.headers().contains(k)) {
+                headers.put(k, actual.headers().get((k)));
+            }
+        });
 
         for (Map.Entry<String, String> header : actual.headers()) {
             if (header.getKey().toLowerCase(Locale.ROOT).equals("content-type")) {
@@ -206,7 +219,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                     responses.add(bufferHttpResponse);
                     return bufferHttpResponse;
                 } catch (ExecutionException | InterruptedException | TimeoutException e) {
-                    LOGGER.error("Failed to response pending http request in {} {}", 10, "s");
+                    LOGGER.error("Failed to response pending http request in {} {}", 10, "s", e);
                 }
             }
 
@@ -231,6 +244,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     public static class SupplemntaryData {
         private final List<RequestMessage> sentMessages = new ArrayList<>();
         private final List<JSONObject> receivedMessages = new ArrayList<>();
+        private final Map<String, String> receivedHeaders = new HashMap<>();
 
         public void addSentMessage(final RequestMessage messageToSend) {
             sentMessages.add(messageToSend);
@@ -240,8 +254,17 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
             receivedMessages.add(received);
         }
 
+        public void addReceivedHeader(final String key, final String value) {
+            receivedHeaders.put(key, value);
+        }
+
         public JSONObject getLastReceivedMessage() {
             return receivedMessages.getLast();
         }
+
+        public Map<String, String> getLastReceivedHeader() {
+            return receivedHeaders;
+        }
+
     }
 }

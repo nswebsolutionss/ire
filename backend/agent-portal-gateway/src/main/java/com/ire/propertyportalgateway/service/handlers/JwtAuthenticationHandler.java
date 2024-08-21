@@ -1,70 +1,55 @@
 package com.ire.propertyportalgateway.service.handlers;
 
 import com.generated.organizationplatform.protocol.response.Response;
-import com.ire.propertyportalgateway.service.HttpOutboundMessagePublisher;
 import com.ire.propertyportalgateway.service.ResponseHelper;
-import io.vertx.core.Future;
+import com.ire.propertyportalgateway.service.alerts.Alerts;
 import io.vertx.core.Handler;
 import io.vertx.core.http.Cookie;
-import io.vertx.ext.auth.User;
 import io.vertx.ext.auth.authentication.TokenCredentials;
 import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.web.RoutingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class JwtAuthenticationHandler implements Handler<RoutingContext> {
 
-    private static final Logger LOGGER = LogManager.getLogger(JwtAuthenticationHandler.class);
+    public static final String ACCESS_TOKEN = "access_token";
 
     private final JWTAuth authProvider;
-    private final HttpOutboundMessagePublisher httpOutboundMessagePublisher;
+    private final Alerts alerts;
 
-    public JwtAuthenticationHandler(JWTAuth authProvider, HttpOutboundMessagePublisher httpOutboundMessagePublisher) {
+    public JwtAuthenticationHandler(final JWTAuth authProvider, final Alerts alerts) {
         this.authProvider = authProvider;
-        this.httpOutboundMessagePublisher = httpOutboundMessagePublisher;
+        this.alerts = alerts;
     }
 
     @Override
     public void handle(RoutingContext routingContext) {
+
         String token = tokenIsValid(routingContext);
+
         if (token.isEmpty()) {
-            LOGGER.warn("Missing access token: " + formatHeaderLog(routingContext));
             ResponseHelper.unauthorised(routingContext, new Response("", "Unauthenticated"));
         } else {
-            Future<User> authenticator = authProvider.authenticate(new TokenCredentials(token));
-            authenticator
+            authProvider.authenticate(new TokenCredentials(token))
                     .onFailure(
                             result ->
                             {
-                                LOGGER.warn(result.fillInStackTrace());
+                                alerts.raiseAlert(result.getMessage());
                                 ResponseHelper.unauthorised(routingContext, new Response("", "Unauthenticated"));
-                            }
-                    )
-                    .onSuccess(res -> {
-                        LOGGER.info(res.expired());
-                        routingContext.next();
-                    });
+
+                            })
+                    .onSuccess(res -> routingContext.next());
         }
     }
 
-    private String formatHeaderLog(final RoutingContext routingContext) {
-        StringBuilder headers = new StringBuilder();
-        headers.append("Request Headers: \n");
-        routingContext.request().headers().forEach(header -> headers.append(header.getKey() + " : " + header.getValue() + "\n"));
-        return headers.toString();
-    }
-
-
-    private static String tokenIsValid(final RoutingContext routingContext) {
+    private String tokenIsValid(final RoutingContext routingContext) {
         try {
-            Cookie token = routingContext.request().getCookie("access_token");
+            Cookie token = routingContext.request().getCookie(ACCESS_TOKEN);
             if (token == null) {
                 return "";
             }
             return token.getValue();
         } catch (Exception e) {
-            LOGGER.error(e);
+            alerts.raiseAlert("Exception: ", e);
             return "";
         }
     }

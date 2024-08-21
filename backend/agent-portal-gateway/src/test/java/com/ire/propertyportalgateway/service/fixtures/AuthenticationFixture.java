@@ -85,6 +85,19 @@ public class AuthenticationFixture {
         );
     }
 
+    public MessageToSend checkAuthenticatedTokenExpiredWithRefreshToken() {
+        return () -> new RequestMessage(
+                HttpMethod.GET,
+                "/api/authenticated",
+                "localhost",
+                8084,
+                null,
+                null,
+                Map.of("access_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjEyMTAzOTQ4NTh9.skeLTM8caT2_vAE1YxD7h49VER1a8GhIbDG-KXtBWWI",
+                        "refresh_token", "qouihfeqw823fh98f")
+        );
+    }
+
     public MessageToSend checkAuthenticatedValidToken() {
 
         return () -> new RequestMessage(

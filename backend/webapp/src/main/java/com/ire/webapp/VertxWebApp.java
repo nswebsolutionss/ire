@@ -58,7 +58,7 @@ public class VertxWebApp extends AbstractVerticle {
     private void startHttpsServer(Promise<Void> startPromise, Router router) {
         HttpServer httpServer = vertx.createHttpServer();
         httpServer.requestHandler(router);
-        httpServer.exceptionHandler(err -> LOGGER.error(err.getLocalizedMessage()));
+        httpServer.exceptionHandler(err -> LOGGER.error("", err));
 
         //8082
         httpServer.listen(config.port(), config.host(), res -> {

@@ -46,7 +46,6 @@ public class ResponseHelper {
     public static void badRequest(RoutingContext routingContext, Object body) {
         Buffer buffer = new BufferImpl();
         String encodedBody = Json.encode(body);
-        LOGGER.error(encodedBody);
         buffer.appendString(encodedBody);
         HttpServerResponse response = routingContext.response();
         response.putHeader("Content-type", "application/json");
@@ -71,7 +70,6 @@ public class ResponseHelper {
     public static void redirect(RoutingContext routingContext, Object body, String location) {
         Buffer buffer = new BufferImpl();
         String encodedBody = Json.encode(body);
-        LOGGER.error(encodedBody);
         buffer.appendString(encodedBody);
         HttpServerResponse response = routingContext.response();
         response.putHeader("Content-type", "application/json");
@@ -85,7 +83,6 @@ public class ResponseHelper {
     public static void resourceNotFound(RoutingContext routingContext, Object body) {
         Buffer buffer = new BufferImpl();
         String encodedBody = Json.encode(body);
-        LOGGER.error(encodedBody);
         buffer.appendString(encodedBody);
         HttpServerResponse response = routingContext.response();
         response.putHeader("Content-type", "application/json");
@@ -98,7 +95,6 @@ public class ResponseHelper {
     public static void conflict(RoutingContext routingContext, Object body) {
         Buffer buffer = new BufferImpl();
         String encodedBody = Json.encode(body);
-        LOGGER.error(encodedBody);
         buffer.appendString(encodedBody);
         HttpServerResponse response = routingContext.response();
         response.putHeader("Content-type", "application/json");

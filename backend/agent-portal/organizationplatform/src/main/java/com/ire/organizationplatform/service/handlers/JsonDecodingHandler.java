@@ -28,7 +28,7 @@ public class JsonDecodingHandler<T> implements Handler<RoutingContext> {
                 handler.handle(routingContext, request);
 
             } catch (Exception e) {
-                LOGGER.error("Failed to decode request: " + e);
+                LOGGER.error("Failed to decode request: ", e);
                 ResponseHelper.badRequest(routingContext, new Response("", "Failed to decode request"));
             }
         });
