@@ -1,10 +1,10 @@
-import { useUser } from "@clerk/clerk-react"
-import { useMemo, useState } from "react"
-import { Outlet, redirect, useNavigate } from "react-router-dom"
-import { LoadingSpinner } from "../components/atoms/LoadingSpinner"
+import { useMemo, useState} from "react"
+import { Outlet} from "react-router-dom"
+import { LoadingSpinner } from "../components/atoms/LoadingSpinner";
 
 export default function ProtectedRoute() {
-  const navigate = useNavigate()
+  const [isSignedIn, setIsSignedIn] = useState(false)
+
   useMemo(() => {
     fetch('http://localhost:8084/api/authenticated', {
       method: 'GET', 
@@ -12,7 +12,7 @@ export default function ProtectedRoute() {
       mode: 'cors'                    
       })
   .then(response => {
-      
+      setIsSignedIn(true)
   }).catch(err => {
     fetch('http://localhost:8084/login', {
       method: 'GET', 
@@ -22,7 +22,6 @@ export default function ProtectedRoute() {
       const redirectUrl = response.headers.get("Location");
       if(redirectUrl) {
           window.location.replace(redirectUrl)
-
       }
   })
   })
@@ -31,7 +30,8 @@ export default function ProtectedRoute() {
 
   return (
     <>
-      <Outlet />
+    {isSignedIn ? <Outlet/> : <LoadingSpinner/>}
+    
     </>
   )
 

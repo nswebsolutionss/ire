@@ -6,6 +6,11 @@ import RootLayout from './layout/RootLayout';
 import reportWebVitals from './reportWebVitals';
 import { DashboardPage } from './routes/DashboardPage';
 import LandingPage from './routes/LandingPage';
+import ForSalePage from './routes/ForSalePage';
+import PropertySaleResults from './routes/PropertySaleResults';
+import { APIProvider } from "@vis.gl/react-google-maps";
+
+
 
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -16,6 +21,11 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { path: "/", element: <LandingPage /> },
+      { path: "/for-sale", element: <ForSalePage /> },
+      { path: "/property-for-sale", element: <PropertySaleResults /> },
+
+
+
       {
         element: <ProtectedRoute />,
         path: "dashboard",
@@ -34,7 +44,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+    <APIProvider apiKey={"AIzaSyB4pyPkA-1zcA4bZK1ymVF59__EshNWibo"}>
       <RouterProvider router={router} />
+      </APIProvider>
     </Provider>
   </React.StrictMode>
 );
