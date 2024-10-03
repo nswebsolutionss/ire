@@ -23,13 +23,14 @@ public class AuthorizationCallbackHandler implements Handler<RoutingContext> {
         try {
             if (authWorkflow.get(state) == null) {
                 alerts.raiseAlert("OAuth Workflow broken - state does not match, be aware of man in the middle attack");
-                routingContext.reroute("/login");
+                routingContext.response().setStatusCode(400).setStatusMessage("Unauthorized").end();
             } else {
                 authWorkflow.remove(state).onLoggedOn(state, routingContext);
             }
         } catch (final Exception exception) {
             alerts.raiseAlert("Caught exception on callback request: ", exception);
-            routingContext.reroute("/login");
+            routingContext.response().setStatusCode(400).setStatusMessage("Unauthorized").end();
+
         }
 
 

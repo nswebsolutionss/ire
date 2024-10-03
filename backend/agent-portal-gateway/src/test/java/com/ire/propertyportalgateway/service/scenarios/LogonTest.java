@@ -20,7 +20,6 @@ public class LogonTest {
         dsl.webUser().when().httpUser().sends(fixture.logonRequest());
         dsl.webUser().then().httpUser().receives(fixture.logonRedirectResponse());
         dsl.alerts().then().expectNoAlerts();
-
     }
 
     @Test
@@ -28,7 +27,7 @@ public class LogonTest {
         LogonFixture fixture = new LogonFixture();
 
         dsl.webUser().when().httpUser().sends(fixture.logonCallbackRequest());
-        dsl.webUser().then().httpUser().receives(fixture.logonRedirectResponse());
+        dsl.webUser().then().httpUser().receives(fixture.logonRedirectUnauthenticatedResponse());
         dsl.alerts().then().expectAlertContaining("OAuth Workflow broken");
 
     }

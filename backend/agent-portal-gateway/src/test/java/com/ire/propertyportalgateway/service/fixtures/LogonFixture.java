@@ -12,7 +12,6 @@ import java.util.UUID;
 import static com.ire.propertyportalgateway.service.support.RestApi.supplementaryData;
 
 public class LogonFixture {
-    private final String id = UUID.randomUUID().toString();
 
     public MessageToSend logonRequest() {
         return () -> new RequestMessage(
@@ -62,8 +61,14 @@ public class LogonFixture {
                 .headers(Map.of("Location", "https://0939966.propelauthtest.com/propelauth/oauth/authorize?redirect_uri=http://localhost:8084/callback&client_id=531752b5a27b659e3592aeca6866d5a8&response_type=code&state=1865365239572480830"));
     }
 
+    public MessageToReceive logonRedirectUnauthenticatedResponse() {
+        return new SuccessResponseMessage().statusCode(400)
+                .contentType(null)
+                .contentBody(null);
+    }
+
     public MessageToReceive logonCallbackResponse() {
-        return new SuccessResponseMessage().statusCode(302)
+        return new SuccessResponseMessage().statusCode(200)
                 .contentType(null)
                 .headers(Map.of("Location", "http://localhost:5174/dashboard"));
     }

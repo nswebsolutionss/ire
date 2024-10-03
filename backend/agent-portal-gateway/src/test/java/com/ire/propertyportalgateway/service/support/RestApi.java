@@ -35,17 +35,14 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
     private final List<RequestMessage> sentMessages = new ArrayList<>();
     private final List<CompletableFuture<HttpResponse<Buffer>>> pendingRequestList = new ArrayList<CompletableFuture<HttpResponse<Buffer>>>();
     private final List<HttpResponse<Buffer>> responses = new ArrayList<>();
-    private final Vertx vertx;
     private final WebClient client;
     private CompletableFuture<HttpResponse<Buffer>> future = new CompletableFuture<>();
-    private final ObjectMapper mapper = new ObjectMapper();
     private final List<String> ignoredResolvers = new ArrayList<>();
     public final static SupplemntaryData supplementaryData = new SupplemntaryData();
 
     public RestApi(List<String> ignoredResolvers) {
-        this.vertx = Vertx.vertx();
+        Vertx vertx = Vertx.vertx();
         this.client = WebClient.create(vertx);
-        this.mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         this.ignoredResolvers.addAll(ignoredResolvers);
     }
 
@@ -60,7 +57,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
     }
 
-    private CompletableFuture<HttpResponse<Buffer>> execAsync(RequestMessage request) {
+    private CompletableFuture<HttpResponse<Buffer>> execAsync(final RequestMessage request) {
         HttpRequest<Buffer> httpRequest = client.requestAbs(request.method(), "http://" + request.host() + ":" + request.port() + "/" + request.uri());
         try {
             if (!request.headers().isEmpty()) {
@@ -102,12 +99,11 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         });
     }
 
-
     public void receives(final MessageToReceive expected) {
         waitForResponseAndAssert(expected.toMessage());
     }
 
-    private void waitForResponseAndAssert(ResponseMessage expected) {
+    private void waitForResponseAndAssert(final ResponseMessage expected) {
 
         Awaitility.await(Thread.currentThread().getName())
                 .timeout(2, TimeUnit.SECONDS)
@@ -156,7 +152,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
                 );
     }
 
-    private void assertResponseBody(JSONObject expected, JSONObject actual) {
+    private void assertResponseBody(final JSONObject expected, final JSONObject actual) {
         expected.keys().forEachRemaining(key -> {
             if (ignoredResolvers.contains(key)) {
                 Assertions.assertTrue(actual.has(key));
@@ -174,7 +170,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
 
     }
 
-    private ResponseMessage mapVertxResponseToResponse(HttpResponse<Buffer> actual, ResponseMessage expected) {
+    private ResponseMessage mapVertxResponseToResponse(final HttpResponse<Buffer> actual, final ResponseMessage expected) {
         Map<String, String> headers = new HashMap<>();
         String contentTypeRaw = "";
 
@@ -199,7 +195,7 @@ public class RestApi implements Handler<AsyncResult<HttpResponse<Buffer>>> {
         );
     }
 
-    private static ContentType mapContentType(String contentTypeRaw) {
+    private static ContentType mapContentType(final String contentTypeRaw) {
         if (contentTypeRaw.toLowerCase(Locale.ROOT).equals("application/json")) {
             return ContentType.JSON;
         }

@@ -92,7 +92,7 @@ public class OAuthWorkflow implements Shareable, AuthWorkflow {
                             (foo) -> {
                                 HttpServerResponse httpServerResponse = addAuthCookies(res, routingContext);
                                 httpServerResponse.headers().add("Location", "http://localhost:5173/dashboard");
-                                httpServerResponse.setStatusCode(302);
+                                httpServerResponse.setStatusCode(200);
                                 httpServerResponse.end();
                             });
                 }
