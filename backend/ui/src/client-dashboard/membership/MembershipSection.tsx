@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Button, Label, VerticalSpacer } from "../../components/atoms/FormFields";
+import { Button, Label, VerticalSpacer } from "@dwellio/components";
 import { useUser } from "../user-slice/useUserStateSelectors";
 
 export const MembershipSection: React.FC = () => {

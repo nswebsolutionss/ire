@@ -1,6 +1,8 @@
+
+
 import { useMemo, useState} from "react"
 import { Outlet} from "react-router-dom"
-import { LoadingSpinner } from "../components/atoms/LoadingSpinner";
+import { LoadingSpinner } from "@dwellio/components"
 
 export default function ProtectedRoute() {
   const [isSignedIn, setIsSignedIn] = useState(false)

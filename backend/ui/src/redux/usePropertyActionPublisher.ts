@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useThunkDispatch } from "./useThunkDispatch"
 import { NewPropertyState, usePostProperty } from "./thunks/PropertyActions";
-import { PropertyState } from "../client-dashboard/property-slice/propertySlice";
 
 export interface InsertAction {
     token: string

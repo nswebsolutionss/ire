@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "src/*": ["./src/*"],
+      "@dwellio/components": ["./src/components/index.ts"],
+      "@dwellio/pages": ["./src/pages/index.ts"],
+      "assets/*":["./src/assets/*"]
+
+    },
     "target": "ESNext",
     "lib": [
       "dom",

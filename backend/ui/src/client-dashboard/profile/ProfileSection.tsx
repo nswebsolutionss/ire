@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { RxQuestionMarkCircled } from "react-icons/rx";
-import { HorizontalSpacer, Label, Span, VerticalSpacer } from "../../components/atoms/FormFields";
-import { TextInput } from "../../components/atoms/TextInput";
-import Editor from "../../components/atoms/editor/Editor";
-import { ImageUploader } from "../../components/molecules/ImageUploader";
-import { OpeningTime } from "../../components/molecules/OpeningTime";
+import { HorizontalSpacer, Span, VerticalSpacer } from "../../components/atoms/form-fields";
+import { TextInput } from "../../components/atoms/text-input/text-input";
+import Editor from "../../components/molecules/editor/Editor";
+import { ImageUploader } from "../../components/molecules/image-uploader/ImageUploader";
+import { OpeningTime } from "../../components/molecules/opening-time/OpeningTime";
 import { useUser } from "../user-slice/useUserStateSelectors";
 import { S } from "vite/dist/node/types.d-AKzkD8vd";
 // import { useGetCompanyInformationQuery } from "../../redux/api/apiSlice";
@@ -61,33 +61,33 @@ export const ProfileSection: React.FC = () => {
                     <p style={{ margin: "0px", fontFamily: "inherit", fontSize: "26px", fontWeight: "500", color: "rgba(0, 0,0 ,0.4)", alignSelf: "center" }}>Company Details</p>
 
                     <VerticalSpacer />
-                    <Label style={{ alignSelf: "start", marginTop: "0px", marginBottom: "0px" }}>Description</Label>
+                    {/* <Label style={{ alignSelf: "start", marginTop: "0px", marginBottom: "0px" }}>Description</Label> */}
                     <Editor value={user.profile.details.description} onValueChange={() => { }} />
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <Label style={{ alignSelf: "start" }}>Company Name</Label>
+                        {/* <Label style={{ alignSelf: "start" }}>Company Name</Label> */}
                         <TextInput name="comapany_name" value={profileDetails.comapany_name} onValueChange={handleInputChange}></TextInput>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <Label style={{ alignSelf: "start" }}>Email Address</Label>
+                        {/* <Label style={{ alignSelf: "start" }}>Email Address</Label> */}
                         <TextInput name="email_address" value={profileDetails.email_address} onValueChange={handleInputChange}></TextInput>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <Label style={{ alignSelf: "start" }}>Telephone Number</Label>
+                        {/* <Label style={{ alignSelf: "start" }}>Telephone Number</Label> */}
                         <TextInput name="telephone_number" value={profileDetails.telephone_number} onValueChange={handleInputChange}></TextInput>
                     </div>
                     <Span style={{ justifyContent: "start", display: "flex", flexWrap: "wrap" }}>
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                            <Label style={{ alignSelf: "start" }}>Website URL</Label>
+                            {/* <Label style={{ alignSelf: "start" }}>Website URL</Label> */}
                             <TextInput name="website_url" value={profileDetails.website_url} onValueChange={handleInputChange}></TextInput>
                         </div>
                         <HorizontalSpacer />
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                            <Label style={{ alignSelf: "start" }}>Facebook URL</Label>
+                            {/* <Label style={{ alignSelf: "start" }}>Facebook URL</Label> */}
                             <TextInput name="facebook_url" value={profileDetails.facebook_url} onValueChange={handleInputChange}></TextInput>
                         </div>
                         <HorizontalSpacer />
                         <div style={{ display: "flex", flexDirection: "column" }}>
-                            <Label style={{ alignSelf: "start" }}>Instagram URL</Label>
+                            {/* <Label style={{ alignSelf: "start" }}>Instagram URL</Label> */}
                             <TextInput name="instagram_url" value={profileDetails.instagram_url} onValueChange={handleInputChange}></TextInput>
                         </div>
                     </Span>
@@ -101,7 +101,7 @@ export const ProfileSection: React.FC = () => {
                     <VerticalSpacer />
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <Span>
-                            <Label style={{ alignSelf: "start" }}>Youtube URL</Label>
+                            {/* <Label style={{ alignSelf: "start" }}>Youtube URL</Label> */}
                             <RxQuestionMarkCircled size={18} style={{ marginLeft: "10px" }} />
                         </Span>
                         <TextInput name="youtube_url" value={profileDetails.youtube_url} onValueChange={handleInputChange}></TextInput>

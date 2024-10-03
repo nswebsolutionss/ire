@@ -11,7 +11,7 @@ import { Element } from "./NavElement";
 import { SignedIn, UserButton } from "@clerk/clerk-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../components/atoms/FormFields";
+import { Button } from "../../components/atoms/form-fields";
 
 
 interface NavBarProps {

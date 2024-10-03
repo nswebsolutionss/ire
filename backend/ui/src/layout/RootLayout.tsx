@@ -1,5 +1,4 @@
 import { ClerkProvider } from '@clerk/clerk-react';
-import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
  
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
